@@ -1,0 +1,6 @@
+{
+  "name": "Motion Graphic Project Manager Pro",
+  "description": "Nouveau système professionnel et interactif pour la gestion et le suivi des projets de Motion Design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

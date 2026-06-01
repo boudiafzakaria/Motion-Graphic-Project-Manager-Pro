@@ -1,0 +1,2809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LC Motion - Project Manager Pro</title>
+  
+  <!-- Font Integrations -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- External Data Configuration (Separated admin credentials) -->
+  <script src="config.js"></script>
+  
+  <!-- Tailwind custom theme config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            gold: {
+              50: '#f9f6f0',
+              100: '#f0e8d9',
+              200: '#e1d0b3',
+              300: '#cdb285',
+              400: '#b8945a',
+              500: '#aa8246', // Classic Champagne Gold
+              600: '#956e3b',
+              700: '#7c5830',
+              800: '#644427',
+              900: '#523821',
+              950: '#2f1e11',
+            },
+            obsidian: {
+              50: '#f4f5f6',
+              100: '#e9ebed',
+              200: '#cfd4db',
+              300: '#a6b0be',
+              400: '#758498',
+              500: '#536277',
+              700: '#2b3644',
+              850: '#151a22',
+              900: '#0c0f14', // Rich luxury metallic black
+              950: '#050608', // Dark base backdrop
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Embed premium custom animations and loading states -->
+  <style>
+    /* Styling variables and custom utilities */
+    :root {
+      --gold-primary: #aa8246;
+      --gold-glow: rgba(170, 130, 70, 0.15);
+      --border-glow: rgba(170, 130, 70, 0.08);
+      --glow-light: rgba(255, 255, 255, 0.015);
+    }
+
+    body {
+      background-color: #030406;
+      background-image: 
+        radial-gradient(circle at 5% 5%, rgba(170, 130, 70, 0.05) 0%, transparent 35%),
+        radial-gradient(circle at 95% 95%, rgba(170, 130, 70, 0.04) 0%, transparent 40%),
+        linear-gradient(to bottom, rgba(3, 4, 6, 0.5), #030406);
+    }
+
+    /* custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #030406;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #11141a;
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--gold-primary);
+    }
+
+    /* Glassmorphism premium card utility */
+    .glass-card {
+      background: rgba(9, 11, 15, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.035);
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.01);
+      backdrop-filter: blur(14px) saturate(110%);
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(170, 130, 70, 0.15);
+      box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(170, 130, 70, 0.02);
+    }
+
+    /* Smooth Input transition effects */
+    input, textarea, select {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(170, 130, 70, 0.45) !important;
+      box-shadow: 0 0 14px rgba(170, 130, 70, 0.08) !important;
+      background-color: rgba(4, 5, 7, 0.95) !important;
+    }
+
+    /* Shake Error animation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .shake-anim {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    /* Soft pulse glow */
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.15; }
+      50% { opacity: 0.35; }
+    }
+    .accent-bg-glow {
+      animation: glow-pulse 3s infinite ease-in-out;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        background-image: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .glass-card {
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+        color: #000000 !important;
+        backdrop-filter: none !important;
+      }
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+      th {
+        background: #f1f5f9 !important;
+        color: #000000 !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      td {
+        border: 1px solid #cbd5e1 !important;
+        color: #000000 !important;
+        background: transparent !important;
+      }
+      /* Ensure text is dark and clear */
+      span, p, strong, div, h1, h2, h3, h4, td, th {
+        color: #000000 !important;
+      }
+    }
+    
+    .print-only {
+      display: none;
+    }
+
+    /* Animation for version highlight */
+    @keyframes pulse-slow {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 3s infinite ease-in-out;
+    }
+
+    /* Side drawer animations */
+    .drawer-transition {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body class="text-obsidian-100 font-sans min-h-screen relative overflow-x-hidden antialiased">
+
+  <!-- Interactive Backdrop Glows -->
+  <div class="absolute top-0 right-1/4 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-gold-600/3 rounded-full blur-[100px] pointer-events-none"></div>
+
+  <!-- MAIN APP WRAPPER -->
+  <div id="app-container" class="relative z-10 w-full min-h-screen">
+    <!-- Loaded dynamically by Javascript to prevent unstyled flashes -->
+    <div class="flex items-center justify-center min-h-screen">
+      <div class="flex flex-col items-center gap-3">
+        <svg class="animate-spin w-8 h-8 text-gold-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+        </svg>
+        <span class="text-xs font-mono tracking-wider text-obsidian-400">Loading LC Motion Vault...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION DATA & STATE HANDLER SCRIPT -->
+  <script>
+    // Safe bilingual translation database (all Arabic and English tags combined perfectly)
+    const translations = {
+      en: {
+        logoTitle: "LC MOTION",
+        logoBadge: "PRO",
+        logoSubtitle: "Motion Design Project Timeline & Deadline Tracker",
+        loginTitle: "Administrative Vault Key",
+        loginSubtitle: "Sign in with the secure admin password to authorize data access",
+        passwordLabel: "Password Credentials",
+        passwordPlaceholder: "Enter password...",
+        loginBtn: "Authorize Access",
+        loginError: "Incorrect security credentials entered.",
+        demoPasswordLabel: "Demo access key:",
+        logoutBtn: "Secure Sign Out",
+        searchPlaceholder: "Search projects, design editors, notes, relative folders...",
+        statTotal: "Total Campaigns",
+        statActive: "Ongoing Graphics",
+        statCompleted: "Delivered Motions",
+        statUrgent: "Crucial Urgent",
+        statOverdue: "Overdue Delivery",
+        formNewTitle: "Register Graphics Project",
+        formNewSubtitle: "Create custom monitor metrics for new motion campaigns",
+        formEditTitle: "Modify Campaign Specifications",
+        formEditSubtitle: "Update relative timelines and active review milestones",
+        labelPM: "Project Manager",
+        placeholderPM: "e.g., Project Manager",
+        labelArtist: "Lead Motion Designer",
+        placeholderArtist: "e.g., BOUDIAF Zakaria",
+        labelReceived: "Reception Date",
+        labelDeadline: "Delivery Deadline",
+        labelDb1: "Debrief Gate 01",
+        labelDb2: "Debrief Gate 02",
+        labelDb3: "Debrief Gate 03",
+        labelDebriefs: "Debrief Gates",
+        colDebriefs: "Debrief Gates",
+        labelStatus: "Mark campaign as fully completed and delivered to client",
+        labelFolder: "Project Local Folder Path or URL",
+        placeholderFolder: "e.g., C:\\Projects\\LC_Promo_2026",
+        labelNotes: "Campaign Description Review Notes",
+        placeholderNotes: "E.g., Client reviews, customized timing links, fluid shape styles...",
+        btnReset: "Cancel / New Project",
+        btnAdd: "Register Project",
+        btnUpdate: "Publish Modified Campaign",
+        btnDelete: "Delete Record Permanently",
+        headerMonitor: "Motion Worksheets Monitor",
+        subtitleMonitor: "Real-time automated warnings, active pipeline schedules, and portable data metrics",
+        emptyTitle: "No Active Campaign Records Available",
+        emptySubtitle: "Write and register your first campaign in the form panel to begin interactive timeline reports",
+        colPM: "Project Manager",
+        colArtist: "Lead Artist",
+        colReceived: "Received",
+        colDeadline: "Deadline",
+        colTimeline: "Pipeline Progress & Warning Metrics",
+        colFolder: "Folder Hub",
+        colNotes: "Notes",
+        viewTable: "Data Grid Worksheet",
+        viewKanban: "Milestone Pipelines",
+        metricCompleted: "Completed",
+        metricUrgent: "Urgent",
+        metricOverdue: "Overdue",
+        metricWarning: "In Review",
+        metricSafe: "On Track",
+        daysRemaining: "days remaining",
+        dayRemaining: "1 day remaining",
+        daysOverdue: "days overdue",
+        dayOverdue: "1 day overdue",
+        dueToday: "Due Today",
+        durationSpan: "Total Duration Span:",
+        copySuccess: "Path copied to system clipboard successfully!",
+        allPMs: "All Managers",
+        allArtists: "All Lead Designers",
+        filterPM: "Filter by Manager",
+        filterModel: "Filter by Lead Artist",
+        importBtn: "Import Database JSON",
+        exportBtn: "Export Database JSON",
+        notifyCreated: "Campaign registered successfully inside local offline indexes.",
+        notifyUpdated: "Target campaign dataset updated securely.",
+        notifyDeleted: "Campaign record permanently deleted from local caches.",
+        notifyErrorFields: "Validation Failure: Please fill in all mandatory workspace fields.",
+        notifyErrorDates: "Chronology Error: Delivery date cannot precede reception date.",
+        confirmDelete: "Are you sure you want to permanently erase this campaign dataset? This process cannot be undone."
+      },
+    };
+
+    // Standard high-quality placeholder campaigns
+    const DEFAULT_PROJECTS = [
+      {
+        id: "proj_seeded_1",
+        chefDeProjet: "Zakarie Leduc",
+        motion: "Sarah Animations",
+        dateReception: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        debreif01: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        debreif02: "",
+        debreif03: "",
+        deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        lienProjet: "D:\\MotionSuite\\LC_Promo_2026",
+        autreInformation: "High-priority promotional campaign with fluid liquid shapes.",
+        isCompleted: false,
+        tags: ["Creative", "Urgent"]
+      },
+      {
+        id: "proj_seeded_2",
+        chefDeProjet: "Thomas Roy",
+        motion: "Karim Graphics",
+        dateReception: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        debreif01: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        debreif02: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        debreif03: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        deadline: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        lienProjet: "C:\\Projects\\UX_Explainer_Video",
+        autreInformation: "Product walkthrough focusing on seamless responsive bento design animations.",
+        isCompleted: true,
+        tags: ["Delivered"]
+      },
+      {
+        id: "proj_seeded_3",
+        chefDeProjet: "Zakarie Leduc",
+        motion: "Elena Styles",
+        dateReception: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        debreif01: "",
+        debreif02: "",
+        debreif03: "",
+        deadline: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        lienProjet: "C:\\MotionDesign\\Corporate_Intro",
+        autreInformation: "Logo animation with beautiful 3D particle extrusions.",
+        isCompleted: false,
+        tags: ["In Review"]
+      }
+    ];
+
+    // Local state managers with complete error proof fallback memory storage
+    const DB_KEY = "datalcmotion";
+    const SESSION_KEY = "lcmotion_session";
+    const LANG_KEY = "lcmotion_lang";
+
+    const memoryStore = {};
+    const safeStorage = {
+      getItem(key) {
+        try { return localStorage.getItem(key); } catch (e) { return memoryStore[key] || null; }
+      },
+      setItem(key, val) {
+        try { localStorage.setItem(key, val); } catch (e) { memoryStore[key] = val; }
+      },
+      removeItem(key) {
+        try { localStorage.removeItem(key); } catch (e) { delete memoryStore[key]; }
+      }
+    };
+
+    // Initialize core reactive state variables
+    const state = {
+      lang: "en",
+      currentVersion: safeStorage.getItem("lcmotion_version") || "B", // Version A or Version B
+      isAuthenticated: false,
+      projects: [],
+      selectedId: null,
+      editingDebriefs: [],
+      editingTags: [],
+      filterTag: "ALL",
+      selectedProjectForDrawerId: null,
+      searchQuery: "",
+      view: "table", // table or kanban
+      filterPM: "ALL",
+      filterArtist: "ALL",
+      sortField: "deadline",
+      sortAsc: true,
+      toast: null,
+      shakeLogin: false,
+      loginLoading: false,
+      showRegisterModal: false,
+      adminEmail: safeStorage.getItem("lcmotion_admin_email") || "zakileduc14@gmail.com",
+      emailAlertsEnabled: safeStorage.getItem("lcmotion_email_alerts_enabled") === "true",
+      emailLog: JSON.parse(safeStorage.getItem("lcmotion_email_log") || "[]"),
+      emailDispatching: false,
+      showEmailAlertModal: false,
+      collapsedSections: {
+        activeArtists: false,
+        meanTurnaround: false,
+        alertingPressures: false,
+        resourceMatrix: false,
+        riskScore: false,
+        emailHub: false
+      }
+    };
+
+    // Vector Icon library mapping (comprehensive inline SVGs for 100% network visual coverage)
+    const icons = {
+      lock: `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+      unlock: `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>`,
+      film: `<svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.11" ry="2.11"></rect><path d="M7 2v20"></path><path d="M17 2v20"></path><path d="M2 12h20"></path><path d="M2 7h5"></path><path d="M2 17h5"></path><path d="M17 17h5"></path><path d="M17 7h5"></path></svg>`,
+      globe: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+      search: `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`,
+      upload: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`,
+      download: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`,
+      logout: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`,
+      plus: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+      check: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+      edit: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5y"></path></svg>`,
+      trash: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`,
+      dashboard: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>`,
+      grid: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>`,
+      sortUp: `<svg class="w-3.5 h-3.5 inline ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>`,
+      sortDown: `<svg class="w-3.5 h-3.5 inline ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`,
+      copy: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
+      clock: `<svg class="w-3.5 h-3.5 text-gold-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`,
+      warning: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+      success: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+      error: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
+    };
+
+    // Load active campaigns dataset from storage key
+    function initDatabase() {
+      const stored = safeStorage.getItem(DB_KEY);
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed && Array.isArray(parsed.projects)) {
+            state.projects = parsed.projects;
+            return;
+          }
+        } catch (e) {
+          console.error("Invalid database cache.", e);
+        }
+      }
+      // Load seed database when empty
+      state.projects = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+      saveDatabase();
+    }
+
+    function saveDatabase() {
+      safeStorage.setItem(DB_KEY, JSON.stringify({ projects: state.projects }));
+    }
+
+    // Custom alerts toast
+    function triggerToast(title, message, type = "success") {
+      state.toast = { title, message, type };
+      render();
+      setTimeout(() => {
+        if (state.toast && state.toast.title === title) {
+          state.toast = null;
+          render();
+        }
+      }, 4500);
+    }
+
+    // Session authorization pipeline
+    function checkSession() {
+      const stored = safeStorage.getItem(SESSION_KEY);
+      if (stored) {
+        try {
+          const session = JSON.parse(stored);
+          const maxAge = 24 * 60 * 60 * 1000; // 24 hours validity
+          if (session.authenticated && (Date.now() - session.timestamp) < maxAge) {
+            state.isAuthenticated = true;
+          } else {
+            safeStorage.removeItem(SESSION_KEY);
+          }
+        } catch {
+          safeStorage.removeItem(SESSION_KEY);
+        }
+      }
+    }
+
+    // Forwards and backwards compatible debrief array getter
+    function getProjectDebriefs(p) {
+      if (p.debriefs && Array.isArray(p.debriefs)) {
+        return p.debriefs.filter(Boolean);
+      }
+      const legacy = [];
+      if (p.debreif01) legacy.push(p.debreif01);
+      if (p.debreif02) legacy.push(p.debreif02);
+      if (p.debreif03) legacy.push(p.debreif03);
+      return legacy;
+    }
+
+    // Project date calculations helper to compute warns and stats
+    function computeCampaignMetrics(p) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const parseToLocalMidnight = (dateStr) => {
+        if (!dateStr) return null;
+        const cleanStr = dateStr.trim();
+        
+        let year, monthIndex, day;
+        let delimiter = "";
+        
+        if (cleanStr.includes("-")) delimiter = "-";
+        else if (cleanStr.includes("/")) delimiter = "/";
+        
+        if (delimiter) {
+          const parts = cleanStr.split(delimiter);
+          if (parts.length === 3) {
+            if (parts[0].length === 4) {
+              // YYYY-MM-DD or YYYY/MM/DD
+              year = parseInt(parts[0], 10);
+              monthIndex = parseInt(parts[1], 10) - 1;
+              day = parseInt(parts[2], 10);
+            } else if (parts[2].length === 4) {
+              // DD-MM-YYYY or DD/MM/YYYY
+              year = parseInt(parts[2], 10);
+              monthIndex = parseInt(parts[1], 10) - 1;
+              day = parseInt(parts[0], 10);
+            } else {
+              year = parseInt(parts[0], 10);
+              monthIndex = parseInt(parts[1], 10) - 1;
+              day = parseInt(parts[2], 10);
+            }
+          }
+        }
+        
+        if (year !== undefined && !isNaN(year) && !isNaN(monthIndex) && !isNaN(day)) {
+          return new Date(year, monthIndex, day, 0, 0, 0, 0);
+        }
+        
+        const parsed = new Date(cleanStr);
+        if (!isNaN(parsed.getTime())) {
+          parsed.setHours(0, 0, 0, 0);
+          return parsed;
+        }
+        return null;
+      };
+
+      const reception = parseToLocalMidnight(p.dateReception) || now;
+      const deadline = parseToLocalMidnight(p.deadline) || now;
+
+      const totalSpan = deadline.getTime() - reception.getTime();
+      const remainingTime = deadline.getTime() - now.getTime();
+      
+      // Calculate inclusive days: reception day to deadline day inclusive -> difference + 1
+      const totalDays = Math.max(0, Math.round(totalSpan / (1000 * 60 * 60 * 24)) + 1);
+      const remainingDays = Math.round(remainingTime / (1000 * 60 * 60 * 24));
+
+      // Calculate real percentage progress between reception and deadline based on browser computer date
+      let percentage = 0;
+      if (p.isCompleted) {
+        percentage = 100;
+      } else {
+        if (totalSpan > 0) {
+          const elapsed = now.getTime() - reception.getTime();
+          percentage = Math.max(0, Math.min(100, Math.round((elapsed / totalSpan) * 100)));
+        } else {
+          percentage = 100;
+        }
+      }
+
+      if (p.isCompleted) {
+        return { status: "completed", percentage: 100, remainingText: "", color: "emerald", label: "metricCompleted", totalDays, remainingDays: 0 };
+      }
+
+      if (remainingTime < 0) {
+        const overdueDays = Math.abs(remainingDays);
+        return {
+          status: "overdue",
+          percentage,
+          remainingText: overdueDays === 1 ? "dayOverdue" : "daysOverdue",
+          dayCount: overdueDays,
+          color: "rose",
+          label: "metricOverdue",
+          totalDays,
+          remainingDays
+        };
+      }
+
+      const urgencyRatio = remainingTime / Math.max(1, totalSpan);
+      let status = "safe";
+      let color = "emerald";
+      let label = "metricSafe";
+
+      if (remainingDays === 0) {
+        status = "urgent";
+        color = "amber";
+        label = "dueToday";
+      } else if (remainingDays <= 3 || urgencyRatio <= 0.3) {
+        status = "urgent";
+        color = "amber";
+        label = "metricUrgent";
+      } else if (urgencyRatio <= 0.6) {
+        status = "warning";
+        color = "cyan";
+        label = "metricWarning";
+      }
+
+      return {
+        status,
+        percentage,
+        remainingText: remainingDays === 1 ? "dayRemaining" : "daysRemaining",
+        dayCount: remainingDays,
+        color,
+        label,
+        totalDays,
+        remainingDays
+      };
+    }
+
+    // Dynamic stats computation
+    function getSummaryStats() {
+      const stats = { total: state.projects.length, active: 0, completed: 0, urgent: 0, overdue: 0 };
+      
+      state.projects.forEach(p => {
+        if (p.isCompleted) {
+          stats.completed++;
+        } else {
+          stats.active++;
+          const calc = computeCampaignMetrics(p);
+          if (calc.status === "overdue") {
+            stats.overdue++;
+          } else if (calc.status === "urgent") {
+            stats.urgent++;
+          }
+        }
+      });
+
+      return stats;
+    }
+
+    // Format local paths beautifully
+    function cleanDateFormat(d) {
+      if (!d) return "-";
+      const p = d.split("-");
+      return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+    }
+
+    // Countdown and Remaining Days formatted countdown label
+    function formatRemainingDays(count) {
+      const padded = String(Math.abs(count)).padStart(2, '0');
+      if (count < 0) {
+        return `${padded} days overdue`;
+      } else if (count === 0) {
+        return `00 days remaining`;
+      } else if (count === 1) {
+        return `01 day remaining`;
+      } else {
+        return `${padded} days remaining`;
+      }
+    }
+
+    // Clipboard writer helper
+    function copyText(value) {
+      if (!value) return;
+      navigator.clipboard.writeText(value).then(() => {
+        const tActive = translations[state.lang];
+        triggerToast("Clipboard Service", tActive.copySuccess, "success");
+      }).catch(() => {
+        triggerToast("Clipboard Error", "Unable to access clipboard", "error");
+      });
+    }
+
+    // Dynamic dynamic dropdown filter arrays
+    function getFilterMetadata() {
+      const pmSet = new Set();
+      const artistSet = new Set();
+      state.projects.forEach(p => {
+        if (p.chefDeProjet) pmSet.add(p.chefDeProjet);
+        if (p.motion) artistSet.add(p.motion);
+      });
+      return { pms: Array.from(pmSet), artists: Array.from(artistSet) };
+    }
+
+    // Master filter pipeline
+    function getFilteredAndSortedProjects() {
+      let result = state.projects.filter(p => {
+        const query = state.searchQuery.toLowerCase().trim();
+        const matchSearch = !query || 
+          p.chefDeProjet.toLowerCase().includes(query) ||
+          p.motion.toLowerCase().includes(query) ||
+          p.autreInformation.toLowerCase().includes(query) ||
+          p.lienProjet.toLowerCase().includes(query) ||
+          p.deadline.includes(query);
+
+        const matchPM = state.filterPM === "ALL" || p.chefDeProjet === state.filterPM;
+        const matchArtist = state.filterArtist === "ALL" || p.motion === state.filterArtist;
+        const matchTag = state.currentVersion !== "B" || state.filterTag === "ALL" || (p.tags && p.tags.includes(state.filterTag));
+
+        return matchSearch && matchPM && matchArtist && matchTag;
+      });
+
+      // Execute sort
+      result.sort((a, b) => {
+        let valA = a[state.sortField] || "";
+        let valB = b[state.sortField] || "";
+        if (typeof valA === "string") {
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        }
+        if (valA < valB) return state.sortAsc ? -1 : 1;
+        if (valA > valB) return state.sortAsc ? 1 : -1;
+        return 0;
+      });
+
+      return result;
+    }
+
+    // Database Portable Export JSON backup
+    function exportDatabase() {
+      const dataset = JSON.stringify({ projects: state.projects }, null, 2);
+      const blob = new Blob([dataset], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lcmotion_vault_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Tag Styles and System mappings for custom tag elements
+    const tagStyles = {
+      "Urgent": "bg-rose-500/10 text-rose-400 border border-rose-500/20",
+      "عاجل": "bg-rose-500/10 text-rose-400 border border-rose-500/20",
+      "In Review": "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20",
+      "قيد المراجعة": "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20",
+      "Delivered": "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+      "تم التسليم": "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+      "On Hold": "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+      "معلق": "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+      "Creative": "bg-purple-500/10 text-purple-400 border border-purple-500/20",
+      "إبداعي": "bg-purple-500/10 text-purple-400 border border-purple-500/20"
+    };
+
+    function getTagClass(tag) {
+      return tagStyles[tag] || "bg-obsidian-850 text-obsidian-300 border border-white/5";
+    }
+
+    function toggleEditingTag(tag) {
+      if (!state.editingTags) {
+        state.editingTags = [];
+      }
+      if (state.editingTags.includes(tag)) {
+        state.editingTags = state.editingTags.filter(t => t !== tag);
+      } else {
+        state.editingTags.push(tag);
+      }
+      render();
+    }
+
+    function addCustomEditingTag(tag) {
+      const trimmed = tag.trim();
+      if (!trimmed) return;
+      if (!state.editingTags) {
+        state.editingTags = [];
+      }
+      if (!state.editingTags.includes(trimmed)) {
+        state.editingTags.push(trimmed);
+      }
+      render();
+    }
+
+    function setAppVersion(v) {
+      state.currentVersion = v;
+      safeStorage.setItem("lcmotion_version", v);
+      state.selectedProjectForDrawerId = null;
+      resetForm();
+      render();
+    }
+
+    // No language toggling when only English is supported
+
+    function exportToExcel() {
+      const headers = [
+        "Project ID",
+        "Project Manager",
+        "Lead Artist",
+        "Reception Date",
+        "Debrief Gates",
+        "Deadline Date",
+        "Total Period (Days)",
+        "Status",
+        "Folder Hub Path",
+        "Review Notes",
+        "Tags"
+      ];
+      
+      const csvRows = [headers];
+      
+      state.projects.forEach(p => {
+        const metrics = computeCampaignMetrics(p);
+        const debriefs = getProjectDebriefs(p).join(' | ');
+        const tags = (p.tags || []).join(' , ');
+        const statusText = p.isCompleted ? "Completed" : "Active";
+        
+        csvRows.push([
+          p.id,
+          p.chefDeProjet,
+          p.motion,
+          p.dateReception,
+          debriefs,
+          p.deadline,
+          metrics.totalDays,
+          statusText,
+          p.lienProjet || "",
+          (p.autreInformation || "").replace(/\n/g, " "),
+          tags
+        ]);
+      });
+      
+      const csvStr = "\uFEFF" + csvRows.map(row => 
+        row.map(cell => {
+          const val = String(cell || "").replace(/"/g, '""');
+          return `"${val}"`;
+        }).join(",")
+      ).join("\n");
+      
+      const blob = new Blob([csvStr], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lcmotion_export_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      
+      triggerToast(
+        "Excel Export Succeeded", 
+        "Tabular datasheet downloaded successfully as an Excel-compatible CSV database format.", 
+        "success"
+      );
+    }
+
+    // Database JSON restore backup
+    function importDatabase(input) {
+      if (!input.files || input.files.length === 0) return;
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && Array.isArray(parsed.projects)) {
+            // Verify structural properties of imported metrics
+            const validated = parsed.projects.filter(p => p && typeof p.chefDeProjet === "string" && typeof p.motion === "string");
+            
+            // Format or generate IDs for validated imports
+            validated.forEach(p => {
+              if (!p.id) {
+                p.id = `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+              }
+            });
+
+            // Merge strategy: update existing by ID, insert brand new ones at the beginning
+            const projectMap = {};
+            state.projects.forEach(p => {
+              projectMap[p.id] = p;
+            });
+
+            let addedCount = 0;
+            validated.forEach(p => {
+              if (!projectMap[p.id]) {
+                addedCount++;
+              }
+              projectMap[p.id] = p;
+            });
+
+            const mergedProjects = [];
+            // Keep existing projects in original relative position, but updated
+            state.projects.forEach(p => {
+              mergedProjects.push(projectMap[p.id]);
+            });
+            // Prepended new imports
+            validated.forEach(p => {
+              if (!state.projects.some(ep => ep.id === p.id)) {
+                mergedProjects.unshift(p);
+              }
+            });
+
+            state.projects = mergedProjects;
+            saveDatabase();
+            triggerToast("Import Complete", `Merged ${validated.length} campaigns (${addedCount} new, ${validated.length - addedCount} updated).`, "success");
+            render();
+          } else {
+            triggerToast("Import Failed", "Format structure not identified.", "error");
+          }
+        } catch (err) {
+          triggerToast("Import Failed", "Invalid JSON data uploaded.", "error");
+        }
+      };
+      reader.readAsText(file);
+      input.value = "";
+    }
+
+    // Authorization processing
+    function enterAdmin(pwd) {
+      if (state.loginLoading) return;
+      state.loginLoading = true;
+      render();
+
+      setTimeout(() => {
+        const textLabel = translations[state.lang];
+        const correctPassword = (window.LCMotionConfig && window.LCMotionConfig.adminPassword) || "";
+        if (pwd.trim() === correctPassword) {
+          safeStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, timestamp: Date.now() }));
+          state.isAuthenticated = true;
+          triggerToast("Authentication Verified", "Welcome to LC Motion administrative hub.", "success");
+        } else {
+          state.shakeLogin = true;
+          triggerToast("Access Blocked", textLabel.loginError, "error");
+        }
+        state.loginLoading = false;
+        render();
+        if (state.shakeLogin) {
+          setTimeout(() => { state.shakeLogin = false; render(); }, 400);
+        }
+      }, 500);
+    }
+
+    function exitAdmin() {
+      safeStorage.removeItem(SESSION_KEY);
+      state.isAuthenticated = false;
+      state.selectedId = null;
+      triggerToast("Secure Logout", "You have signed out of administrative workspace successfully.", "success");
+      render();
+    }
+
+    // Helper function to handle project selection cleanly and populate editing list
+    function selectProject(id) {
+      if (state.currentVersion === "B") {
+        state.selectedProjectForDrawerId = id;
+        render();
+        return;
+      }
+      state.selectedId = id;
+      const p = state.projects.find(proj => proj.id === id);
+      if (p) {
+        state.editingDebriefs = getProjectDebriefs(p);
+        state.editingTags = [...(p.tags || [])];
+      } else {
+        state.editingDebriefs = [];
+        state.editingTags = [];
+      }
+      state.showRegisterModal = true;
+      render();
+    }
+
+    // Opens register modal with fresh parameters
+    function openRegisterFormModal() {
+      state.selectedId = null;
+      state.editingDebriefs = [];
+      state.editingTags = [];
+      state.showRegisterModal = true;
+      render();
+    }
+
+    // Activated when editing is selected within the right-hand panel in Version B
+    function activateEditFromDrawer(id) {
+      state.selectedId = id;
+      const p = state.projects.find(proj => proj.id === id);
+      if (p) {
+        state.editingDebriefs = getProjectDebriefs(p);
+        state.editingTags = [...(p.tags || [])];
+      } else {
+        state.editingDebriefs = [];
+        state.editingTags = [];
+      }
+      state.selectedProjectForDrawerId = null; // close detail drawer
+      state.showRegisterModal = true; // Open the modal dialog directly
+      render();
+      setTimeout(() => {
+        const field = document.getElementById("pm-field");
+        if (field) {
+          field.focus();
+          field.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
+    }
+
+    // Helper to reset editing form state
+    function resetForm() {
+      state.selectedId = null;
+      state.editingDebriefs = [];
+      state.editingTags = [];
+      state.showRegisterModal = false;
+      render();
+    }
+
+    // Toggle expand/collapse state of a dashboard section
+    function toggleSection(section) {
+      if (!state.collapsedSections) {
+        state.collapsedSections = {
+          activeArtists: false,
+          meanTurnaround: false,
+          alertingPressures: false,
+          resourceMatrix: false,
+          riskScore: false,
+          emailHub: false
+        };
+      }
+      state.collapsedSections[section] = !state.collapsedSections[section];
+      render();
+    }
+
+    function updateAdminEmail(val) {
+      state.adminEmail = val.trim();
+      safeStorage.setItem("lcmotion_admin_email", state.adminEmail);
+    }
+
+    function toggleDailyAlerts() {
+      state.emailAlertsEnabled = !state.emailAlertsEnabled;
+      safeStorage.setItem("lcmotion_email_alerts_enabled", state.emailAlertsEnabled ? "true" : "false");
+      triggerToast(
+        state.emailAlertsEnabled ? "Alerts Activated" : "Alerts Deactivated",
+        state.emailAlertsEnabled ? `Automated daily summaries armed for ${state.adminEmail}.` : "Automated email dispatches are now suspended.",
+        "success"
+      );
+      render();
+    }
+
+    function dispatchDailyEmailNow() {
+      // Create a nice dispatch simulation
+      state.emailDispatching = true;
+      render();
+      
+      setTimeout(() => {
+        state.emailDispatching = false;
+        
+        // Add log entry
+        const activeCount = state.projects.filter(p => !p.isCompleted).length;
+        const criticalCount = state.projects.filter(p => {
+          const m = computeCampaignMetrics(p);
+          return !p.isCompleted && m.remainingDays <= 3;
+        }).length;
+        
+        const newLog = {
+          timestamp: new Date().toISOString(),
+          recipient: state.adminEmail,
+          metrics: `${activeCount} active pipelines, ${criticalCount} under pressure`
+        };
+        
+        state.emailLog = [newLog, ...(state.emailLog || [])].slice(0, 5); // Keep last 5 dispatches
+        safeStorage.setItem("lcmotion_email_log", JSON.stringify(state.emailLog));
+        
+        state.showEmailAlertModal = true;
+        triggerToast("Email Dispatched", `A full pipeline status update was sent to ${state.adminEmail}`, "success");
+        render();
+      }, 1000);
+    }
+
+    function clearEmailLogs() {
+      state.emailLog = [];
+      safeStorage.setItem("lcmotion_email_log", "[]");
+      triggerToast("Logs Cleared", "Dispatched email telemetry logs have been purged.", "success");
+      render();
+    }
+
+    function generateDailyEmailDigest() {
+      const activeCount = state.projects.filter(p => !p.isCompleted).length;
+      const completedCount = state.projects.filter(p => p.isCompleted).length;
+      
+      const pressing = state.projects.filter(p => {
+        const m = computeCampaignMetrics(p);
+        return !p.isCompleted && m.remainingDays <= 3;
+      });
+
+      let emailHtml = `
+        <div class="bg-obsidian-950 border border-white/10 rounded-2xl p-5 text-left font-mono space-y-4 text-xs text-obsidian-100 max-h-[450px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/10">
+          <div class="border-b border-white/10 pb-3">
+            <div class="flex items-center justify-between text-[11px] text-gold-400">
+              <span class="font-bold">SYSTEM ALERT DISPATCH ENGINE</span>
+              <span>${new Date().toISOString()}</span>
+            </div>
+            <div class="mt-2 space-y-1">
+              <p><span class="text-obsidian-400 font-bold">FROM:</span> governance-alert@lcmotion.com</p>
+              <p><span class="text-obsidian-400 font-bold">TO:</span> ${state.adminEmail}</p>
+              <p><span class="text-obsidian-400 font-bold">SUBJECT:</span> 🛡️ [DAILY STATUS DIGEST] ${activeCount} Active Motion Campaigns</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-white font-bold">Hello BOUDIAF Zakaria,</p>
+            <p class="leading-relaxed text-obsidian-300">Below is your automated daily performance and schedule conflict report for the active Motion Design Pipeline campaigns.</p>
+            
+            <div class="bg-white/[0.02] border border-white/5 rounded-xl p-3.5 grid grid-cols-2 gap-3 text-center">
+              <div>
+                <span class="block text-[9px] text-obsidian-400 font-bold uppercase tracking-wider">ACTIVE PROJECTS</span>
+                <span class="text-xl font-black text-rose-450">${activeCount}</span>
+              </div>
+              <div>
+                <span class="block text-[9px] text-obsidian-400 font-bold uppercase tracking-wider">DELIVERED</span>
+                <span class="text-xl font-black text-emerald-400">${completedCount}</span>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <h4 class="text-rose-400 font-bold uppercase tracking-wider text-[10px] flex items-center gap-1.5">
+                <span>🚨 URGENT HOTLIST (${pressing.length} items with immediate risk)</span>
+              </h4>
+              ${pressing.length === 0 ? `
+                <p class="text-[10px] text-emerald-400 italic font-sans pl-2 border-l-2 border-emerald-500">● No critical schedule warnings reported today. Everything is on track.</p>
+              ` : `
+                <div class="space-y-2 pl-2 border-l-2 border-rose-500 font-sans">
+                  ${pressing.map(p => {
+                    const m = computeCampaignMetrics(p);
+                    const daysStr = m.remainingDays < 0 ? `${Math.abs(m.remainingDays)} days OVERDUE` : m.remainingDays === 0 ? `DUE TODAY` : `${m.remainingDays} days left`;
+                    return `
+                      <div class="text-[11px] leading-relaxed">
+                        <span class="text-white font-bold">${p.motion}</span> on <span class="text-gold-300">${p.chefDeProjet}</span>: 
+                        <strong class="text-rose-400">${daysStr}</strong> 
+                        <span class="text-obsidian-450 text-[10px]">(${m.percentage}% timeline elapsed, deadline: ${p.deadline})</span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              `}
+            </div>
+
+            <div class="border-t border-white/5 pt-3 text-[10px] text-obsidian-500 text-center font-sans">
+              <p>This is an automated system simulation message from Motion Graphic Project Manager Pro Governance Engine. To update coordinates or dispatch settings, use the controls panel.</p>
+            </div>
+          </div>
+        </div>
+      `;
+      return emailHtml;
+    }
+
+    // Interactive debrief gates logic
+    function addNewDebriefGate() {
+      state.editingDebriefs.push("");
+      render();
+    }
+
+    function updateDebriefGate(idx, val) {
+      state.editingDebriefs[idx] = val;
+    }
+
+    // Project worksheet submit transactions
+    function removeDebriefGate(idx) {
+      state.editingDebriefs.splice(idx, 1);
+      render();
+    }
+
+    function submitProjectForm(e) {
+      e.preventDefault();
+      const tA = translations[state.lang] || translations["en"];
+
+      const chef = document.getElementById("pm-field").value.trim();
+      const artist = document.getElementById("artist-field").value.trim();
+      const reception = document.getElementById("received-field").value;
+      const deadline = document.getElementById("deadline-field").value;
+      const folder = document.getElementById("folder-field").value.trim();
+      const notes = document.getElementById("notes-field").value.trim();
+      const isCompleted = document.getElementById("status-field").checked;
+
+      if (!chef || !artist || !reception || !deadline) {
+        triggerToast("Form Validation", tA.notifyErrorFields, "error");
+        return;
+      }
+
+      if (new Date(deadline).getTime() < new Date(reception).getTime()) {
+        triggerToast("Date Sequence Error", tA.notifyErrorDates, "error");
+        return;
+      }
+
+      // Filter non-empty chosen debrief dates
+      const debriefsList = [...state.editingDebriefs].filter(Boolean);
+
+      if (state.selectedId) {
+        // Edit campaign
+        state.projects = state.projects.map(p => {
+          if (p.id === state.selectedId) {
+            return {
+              ...p,
+              chefDeProjet: chef,
+              motion: artist,
+              dateReception: reception,
+              deadline: deadline,
+              debriefs: debriefsList,
+              debreif01: debriefsList[0] || "",
+              debreif02: debriefsList[1] || "",
+              debreif03: debriefsList[2] || "",
+              lienProjet: folder,
+              autreInformation: notes,
+              isCompleted: isCompleted,
+              tags: state.currentVersion === "B" ? [...(state.editingTags || [])] : (p.tags || []),
+              updatedAt: new Date().toISOString()
+            };
+          }
+          return p;
+        });
+        triggerToast("Record Saved", tA.notifyUpdated, "success");
+      } else {
+        // Create new record
+        const newProj = {
+          id: `proj_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+          chefDeProjet: chef,
+          motion: artist,
+          dateReception: reception,
+          deadline: deadline,
+          debriefs: debriefsList,
+          debreif01: debriefsList[0] || "",
+          debreif02: debriefsList[1] || "",
+          debreif03: debriefsList[2] || "",
+          lienProjet: folder,
+          autreInformation: notes,
+          isCompleted: isCompleted,
+          tags: state.currentVersion === "B" ? [...(state.editingTags || [])] : [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        state.projects.unshift(newProj);
+        triggerToast("Campaign Registered", tA.notifyCreated, "success");
+      }
+
+      saveDatabase();
+      resetForm();
+    }
+
+    function deleteActiveCampaign() {
+      if (!state.selectedId) return;
+      const tA = translations[state.lang] || translations["en"];
+      if (confirm(tA.confirmDelete)) {
+        state.projects = state.projects.filter(p => p.id !== state.selectedId);
+        saveDatabase();
+        triggerToast("Record Expunged", tA.notifyDeleted, "success");
+        resetForm();
+      }
+    }
+
+    function deleteActiveCampaignById(id) {
+      if (!id) return;
+      const tA = translations[state.lang] || translations["en"];
+      if (confirm(tA.confirmDelete)) {
+        state.projects = state.projects.filter(p => p.id !== id);
+        saveDatabase();
+        triggerToast("Record Expunged", tA.notifyDeleted, "success");
+        state.selectedProjectForDrawerId = null;
+        render();
+      }
+    }
+
+    function triggerSort(field) {
+      if (state.sortField === field) {
+        state.sortAsc = !state.sortAsc;
+      } else {
+        state.sortField = field;
+        state.sortAsc = true;
+      }
+      render();
+    }
+
+    // CORE RENDERING ENGINE
+    function render() {
+      const container = document.getElementById("app-container");
+      if (!container) return;
+
+      // Remember focus element and its cursor selections to prevent typed input interruptions
+      const activeEl = document.activeElement;
+      const activeId = activeEl ? activeEl.id : null;
+      let selectionStart = null;
+      let selectionEnd = null;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        try {
+          selectionStart = activeEl.selectionStart;
+          selectionEnd = activeEl.selectionEnd;
+        } catch (e) {}
+      }
+
+      state.lang = "en";
+      const tActive = translations.en;
+      const isRtl = false;
+      
+      // Update HTML main attributes for RTL and language support
+      document.documentElement.lang = "en";
+      document.documentElement.dir = "ltr";
+
+      // 1. GATED ENTRY SCREEN
+      if (!state.isAuthenticated) {
+        container.innerHTML = `
+          <div class="min-h-screen flex items-center justify-center px-4 relative">
+            <div class="glass-card max-w-md w-full p-8 rounded-2xl relative overflow-hidden ring-1 ring-white/5 ${state.shakeLogin ? 'shake-anim' : ''}">
+              
+              <div class="flex flex-col items-center text-center mt-6 mb-8">
+                <div class="flex items-center justify-center w-14 h-14 bg-gradient-to-br from-gold-500 to-gold-700 text-obsidian-950 rounded-xl shadow-lg shadow-gold-500/10 mb-4 ring-1 ring-white/10">
+                  ${icons.film}
+                </div>
+                <h1 class="text-2xl font-sans font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gold-200 via-gold-400 to-gold-200 leading-none">
+                  ${tActive.logoTitle}
+                </h1>
+                <p class="text-xs text-obsidian-400 mt-2 max-w-xs leading-relaxed">
+                  ${tActive.loginSubtitle}
+                </p>
+              </div>
+
+              <form onsubmit="event.preventDefault(); enterAdmin(document.getElementById('pwd-v').value);" class="space-y-5">
+                <div class="space-y-1.5 text-left">
+                  <label class="text-[10px] font-bold text-obsidian-400 uppercase tracking-widest">${tActive.passwordLabel}</label>
+                  <div class="relative">
+                    <input id="pwd-v" type="password" required placeholder="${tActive.passwordPlaceholder}" 
+                           class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-gold-500/40 focus:ring-1 focus:ring-gold-500/20 placeholder-obsidian-500 font-mono" />
+                    <button type="button" onclick="const i = document.getElementById('pwd-v'); if(i.type==='password'){i.type='text'; this.innerHTML = '🙈';} else {i.type='password'; this.innerHTML = '👁️';}" 
+                            class="absolute top-1/2 right-3 -translate-y-1/2 text-xs opacity-60 hover:opacity-100">
+                      👁️
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-obsidian-950 text-xs font-bold uppercase tracking-wider py-3 px-4 rounded-xl transition shadow-lg shadow-gold-500/5 hover:translate-y-[-1px] flex items-center justify-center gap-2">
+                  ${state.loginLoading ? `
+                    <svg class="animate-spin h-4 w-4 text-obsidian-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                  ` : `${icons.unlock} <span>${tActive.loginBtn}</span>`}
+                </button>
+              </form>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // 2. MAIN APPLICATION WORKSPACE
+      const stats = getSummaryStats();
+      const dropMap = getFilterMetadata();
+      const filteredResult = getFilteredAndSortedProjects();
+      const activeProject = state.projects.find(p => p.id === state.selectedId) || null;
+
+      // Header component
+      const headerHtml = `
+        <header class="sticky top-0 z-40 bg-obsidian-950/80 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-8">
+          <div class="max-w-[1800px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Branding details -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-tr from-gold-500 to-gold-700 text-obsidian-950 rounded-lg shadow-md ring-1 ring-white/10">
+                ${icons.film}
+              </div>
+              <div class="flex flex-col text-left">
+                <div class="flex items-center gap-2">
+                  <span class="text-md font-sans font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-gold-200 to-gold-500 leading-none">
+                    ${tActive.logoTitle}
+                  </span>
+                  <span class="text-[8px] font-mono leading-none border border-gold-500/30 text-gold-400 bg-gold-500/5 px-1.5 py-0.5 rounded uppercase font-extrabold tracking-wider">
+                    ${tActive.logoBadge}
+                  </span>
+                </div>
+                <span class="text-[10px] text-obsidian-400 mt-1 leading-none tracking-wide">${tActive.logoSubtitle}</span>
+              </div>
+            </div>
+
+            <!-- Toolbar Controls -->
+            <div class="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto no-print">
+              
+              <!-- Version Toggle Tab set -->
+              <div class="flex items-center gap-1 bg-obsidian-900 border border-white/5 rounded-xl p-1 shrink-0">
+                <button onclick="setAppVersion('A')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${state.currentVersion === 'A' ? 'bg-gold-500 text-obsidian-950 font-black shadow-md' : 'text-obsidian-400 hover:text-white'}">
+                  Ver A
+                </button>
+                <button onclick="setAppVersion('B')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${state.currentVersion === 'B' ? 'bg-gold-500 text-obsidian-950 font-black shadow-md animate-pulse-slow' : 'text-obsidian-400 hover:text-white'}">
+                  <span>Ver B</span>
+                  <span class="text-[8px] px-1 bg-red-500 text-white rounded font-mono">PRO</span>
+                </button>
+              </div>
+
+              <!-- Computer System Calendar Date -->
+              <div class="px-3 py-2 text-xs font-mono font-bold rounded-xl bg-gold-500/5 border border-gold-500/20 text-gold-400 flex items-center gap-1.5 shrink-0" title="Computer System Date">
+                ${icons.clock}
+                <span>PC Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
+              </div>
+
+              <!-- Live query input -->
+              <div class="flex items-center gap-2 bg-obsidian-900/80 border border-white/5 rounded-xl px-3 py-2 w-full max-w-xs ring-1 ring-inset ring-white/2">
+                <span class="text-obsidian-500 shrink-0">${icons.search}</span>
+                <input type="text" id="search-query-input" oninput="state.searchQuery=this.value; render();" value="${state.searchQuery}" placeholder="${tActive.searchPlaceholder}" 
+                       class="bg-transparent text-xs text-white placeholder-obsidian-500 focus:outline-none w-full" />
+              </div>
+
+              <!-- Database Backup tools -->
+              <div class="flex items-center gap-2 shrink-0">
+                <label class="px-3 py-2 text-xs font-semibold rounded-xl bg-obsidian-900 border border-white/5 text-obsidian-300 hover:border-white/20 hover:text-white transition cursor-pointer flex items-center gap-1.5">
+                  ${icons.upload}
+                  <span>${tActive.importBtn}</span>
+                  <input type="file" accept=".json" onchange="importDatabase(this);" class="hidden" />
+                </label>
+                <button onclick="exportDatabase();" class="px-3 py-2 text-xs font-semibold rounded-xl bg-obsidian-900 border border-white/5 text-obsidian-300 hover:border-white/20 hover:text-white transition flex items-center gap-1.5">
+                  ${icons.download}
+                  <span>${tActive.exportBtn}</span>
+                </button>
+                ${state.currentVersion === "B" ? `
+                  <button onclick="exportToExcel();" class="px-3 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:border-emerald-400/50 hover:text-white hover:bg-emerald-500/20 transition flex items-center gap-1.5 animate-pulse-slow" title="Export Excel Tabular Report">
+                    <span>📊 Export Excel</span>
+                  </button>
+                ` : ""}
+              </div>
+
+              <!-- Safe logout button -->
+              <button onclick="exitAdmin();" class="px-3 py-2 text-xs font-bold rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 transition flex items-center gap-1.5 shrink-0">
+                ${icons.logout}
+                <span>${tActive.logoutBtn}</span>
+              </button>
+            </div>
+
+          </div>
+        </header>
+      `;
+
+      // Stats metrics display strip
+      const statsList = [
+        { title: tActive.statTotal, val: stats.total, color: "from-gold-600/10 to-transparent", border: "border-gold-500/20", text: "text-gold-400", indicatorBg: "bg-gold-500" },
+        { title: tActive.statActive, val: stats.active, color: "from-cyan-600/10 to-transparent", border: "border-cyan-500/20", text: "text-cyan-400", indicatorBg: "bg-cyan-500" },
+        { title: tActive.statCompleted, val: stats.completed, color: "from-emerald-600/10 to-transparent", border: "border-emerald-500/20", text: "text-emerald-400", indicatorBg: "bg-emerald-500" },
+        { title: tActive.statUrgent, val: stats.urgent, color: "from-amber-600/10 to-transparent", border: "border-amber-500/20", text: "text-amber-400", indicatorBg: "bg-amber-500" },
+        { title: tActive.statOverdue, val: stats.overdue, color: "from-rose-600/10 to-transparent", border: "border-rose-500/20", text: "text-rose-400", indicatorBg: "bg-rose-500" }
+      ];
+
+      const statsHtml = `
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 no-print">
+          ${statsList.map(s => `
+            <div class="glass-card rounded-2xl p-4 md:p-5 flex items-center justify-between relative overflow-hidden bg-gradient-to-br ${s.color} border ${s.border}">
+              <!-- Dynamic Left Indicator Bar -->
+              <div class="absolute left-0 top-0 bottom-0 w-1 ${s.indicatorBg} opacity-80"></div>
+              <div class="space-y-1.5 pl-2">
+                <span class="text-[9px] font-mono tracking-widest uppercase font-bold text-obsidian-400 block">${s.title}</span>
+                <span class="text-3xl font-sans font-black tracking-tight ${s.text} block">${s.val}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      // Left worksheet project setup and designer form
+      const formHtml = `
+        <div class="glass-card p-6 md:p-7 rounded-2xl border border-white/[0.05] space-y-5 sticky top-28 overflow-hidden relative">
+          <!-- Premium visual ornament top bar -->
+          <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-gold-500 via-gold-400 to-transparent opacity-80"></div>
+          
+          <div class="border-b border-white/5 pb-4 flex items-start justify-between">
+            <div>
+              <h2 class="text-xs font-mono font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-gold-100 to-gold-400 leading-none">
+                ${activeProject ? tActive.formEditTitle : tActive.formNewTitle}
+              </h2>
+              <p class="text-[10px] text-obsidian-450 mt-2.5 leading-relaxed font-sans">
+                ${activeProject ? tActive.formEditSubtitle : tActive.formNewSubtitle}
+              </p>
+            </div>
+            <button type="button" onclick="state.showRegisterModal = false; render();" class="text-obsidian-500 hover:text-white transition p-1.5 text-[11px] leading-none bg-white/[0.02] hover:bg-white/[0.08] rounded-lg border border-white/5 font-mono select-none shrink-0 ml-2">
+              &#x2715;
+            </button>
+          </div>
+
+          <form onsubmit="submitProjectForm(event);" class="space-y-4 font-sans">
+            <!-- Project Manager input -->
+            <div class="space-y-1.5">
+              <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest flex items-center gap-1 select-none">
+                <span>${tActive.labelPM}</span>
+                <span class="text-gold-500">*</span>
+              </label>
+              <input type="text" id="pm-field" required placeholder="${tActive.placeholderPM}" 
+                     value="${activeProject ? activeProject.chefDeProjet : ''}" 
+                     class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-gold-500/40" />
+            </div>
+
+            <!-- Motion Artist input -->
+            <div class="space-y-1.5">
+              <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest flex items-center gap-1 select-none">
+                <span>${tActive.labelArtist}</span>
+                <span class="text-gold-500">*</span>
+              </label>
+              <input type="text" id="artist-field" required placeholder="${tActive.placeholderArtist}" 
+                     value="${activeProject ? activeProject.motion : ''}" 
+                     class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-gold-500/40" />
+            </div>
+
+            <!-- Schedule Dates Dual block -->
+            <div class="grid grid-cols-2 gap-3.5">
+              <div class="space-y-1.5">
+                <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest flex items-center gap-1 select-none">
+                  <span>${tActive.labelReceived}</span>
+                  <span class="text-gold-500">*</span>
+                </label>
+                <input type="date" id="received-field" required 
+                       value="${activeProject ? activeProject.dateReception : new Date().toISOString().split('T')[0]}" 
+                       class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-gold-500/40 select-none cursor-pointer [color-scheme:dark]" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest flex items-center gap-1 select-none">
+                  <span>${tActive.labelDeadline}</span>
+                  <span class="text-gold-500">*</span>
+                </label>
+                <input type="date" id="deadline-field" required 
+                       value="${activeProject ? activeProject.deadline : ''}" 
+                       class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-gold-500/40 select-none cursor-pointer [color-scheme:dark]" />
+              </div>
+            </div>
+
+            <!-- Infinite Debrief tracking gates block -->
+            <div class="space-y-3.5 border-t border-b border-white/5 py-4">
+              <div class="flex items-center justify-between">
+                <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest">
+                  Debrief Gates Status
+                </label>
+                <button type="button" onclick="addNewDebriefGate();" class="text-[9px] font-bold text-gold-400 hover:text-white transition flex items-center gap-1 uppercase tracking-wider">
+                  ${icons.plus} <span>Add Gate</span>
+                </button>
+              </div>
+              
+              <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                ${state.editingDebriefs.length === 0 ? `
+                  <p class="text-[10px] text-obsidian-550 italic py-1.5 text-center font-sans">
+                    No active milestone gates defined
+                  </p>
+                ` : state.editingDebriefs.map((val, idx) => `
+                  <div class="flex items-center gap-2">
+                    <span class="text-[9px] font-mono font-bold text-obsidian-450 shrink-0 select-none">
+                      Gate ${(idx + 1).toString().padStart(2, '0')}:
+                    </span>
+                    <input type="date" id="debrief-input-${idx}" value="${val}" onchange="updateDebriefGate(${idx}, this.value);" 
+                           class="grow bg-obsidian-950/80 border border-white/5 rounded-xl px-2 py-1.5 text-xs text-white focus:outline-none focus:border-gold-500/40 select-none cursor-pointer [color-scheme:dark]" />
+                    <button type="button" onclick="removeDebriefGate(${idx});" class="p-1 px-1.5 bg-rose-500/10 border border-rose-500/15 text-rose-450 hover:bg-rose-500/20 hover:text-rose-400 transition rounded-lg text-[9.5px]">
+                      &#x2715;
+                    </button>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Completeness status status switch -->
+            <div class="p-3 bg-obsidian-950/30 border border-dashed border-white/5 hover:border-white/10 rounded-xl flex items-center gap-3 transition">
+              <input type="checkbox" id="status-field" ${activeProject && activeProject.isCompleted ? 'checked' : ''} 
+                     class="w-4 h-4 rounded border-white/10 text-gold-500 focus:ring-transparent accent-gold-500 select-none cursor-pointer" />
+              <label for="status-field" class="text-xs text-obsidian-200 font-semibold cursor-pointer select-none leading-none">
+                ${tActive.labelStatus}
+              </label>
+            </div>
+
+            <!-- Project local folder destination path -->
+            <div class="space-y-1.5">
+              <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest block">${tActive.labelFolder}</label>
+              <input type="text" id="folder-field" placeholder="${tActive.placeholderFolder}" 
+                     value="${activeProject ? activeProject.lienProjet : ''}" 
+                     class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-gold-500/40" />
+            </div>
+
+            <!-- Additional info note fields -->
+            <div class="space-y-1.5">
+              <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest block">${tActive.labelNotes}</label>
+              <textarea id="notes-field" rows="3" placeholder="${tActive.placeholderNotes}" 
+                        class="w-full bg-obsidian-950/80 border border-white/5 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-gold-500/40 resize-none">${activeProject ? activeProject.autreInformation : ''}</textarea>
+            </div>
+
+             ${state.currentVersion === 'B' ? `
+              <!-- Custom Tags management module -->
+              <div class="space-y-2 border-t border-white/5 pt-3.5">
+                <label class="text-[9.5px] font-mono font-bold text-obsidian-300 uppercase tracking-widest block">
+                  Custom Tags / Labels
+                </label>
+                
+                <!-- Active tag selection pills -->
+                <div class="flex flex-wrap gap-1.5 min-h-[24px]">
+                  ${['Urgent', 'In Review', 'Delivered', 'On Hold', 'Creative'].map(tag => {
+                    const isSelected = state.editingTags && state.editingTags.includes(tag);
+                    return `
+                      <button type="button" onclick="toggleEditingTag('${tag}')" class="text-[9px] px-2.5 py-1 rounded-full border transition font-bold uppercase tracking-wider ${isSelected ? getTagClass(tag) + ' ring-1 ring-white/10' : 'bg-transparent text-obsidian-400 border-white/5 hover:border-white/20 hover:text-white'}">
+                        ${tag}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                
+                <!-- Dynamic input box for new custom tags -->
+                <div class="flex gap-1.5 mt-1">
+                  <input type="text" id="new-tag-input" placeholder="Custom tag name..." 
+                         class="grow bg-obsidian-950/80 border border-white/5 rounded-lg px-2.5 py-1 text-[11px] text-white focus:outline-none focus:border-gold-500/40" 
+                         onkeydown="if(event.key==='Enter'){event.preventDefault(); addCustomEditingTag(this.value); this.value='';}" />
+                  <button type="button" onclick="const input = document.getElementById('new-tag-input'); addCustomEditingTag(input.value); input.value='';" 
+                          class="bg-obsidian-900 border border-white/5 hover:border-gold-500/20 text-xs font-bold px-3 rounded-lg text-obsidian-300 hover:text-white transition">
+                    +
+                  </button>
+                </div>
+              </div>
+            ` : ""}
+
+            <!-- Dynamic footer action operations -->
+            <div class="flex gap-2.5 pt-3 border-t border-white/3">
+              <button type="submit" class="grow bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-obsidian-950 text-xs font-bold uppercase py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 shadow-lg shadow-gold-500/5">
+                ${icons.check}
+                <span>${activeProject ? tActive.btnUpdate : tActive.btnAdd}</span>
+              </button>
+              
+              <button type="button" onclick="resetForm();" class="px-3 bg-obsidian-900 border border-white/5 rounded-xl text-obsidian-300 hover:border-gold-500/20 hover:text-white text-xs transition">
+                <span>${tActive.btnReset}</span>
+              </button>
+
+              ${activeProject ? `
+                <button type="button" onclick="deleteActiveCampaign();" class="p-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/25 transition rounded-xl" title="${tActive.btnDelete}">
+                  ${icons.trash}
+                </button>
+              ` : ""}
+            </div>
+          </form>
+        </div>
+      `;
+
+      // Filter select forms HTML
+      const filterBarsHtml = `
+        <div class="flex flex-col gap-4 bg-obsidian-900/60 p-4 border border-white/[0.04] rounded-2xl relative overflow-hidden no-print font-sans w-full shadow-lg">
+          
+          <!-- Top Row: Title, Register Button, and Views Switcher aligned together on large screens -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-white/[0.04]">
+            
+            <div class="space-y-1 text-left">
+              <h3 class="text-xs font-mono font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-gold-200 to-gold-400 leading-none">
+                🛡️ Real-Time Governance & Controls
+              </h3>
+              <p class="text-[9.5px] text-obsidian-450 leading-relaxed max-w-xl font-medium">
+                Configure filtering matrices, register creative pipeline campaigns, and shift instantly between high-fidelity table worksheets and milestone kanban views.
+              </p>
+            </div>
+
+            <!-- Compact Actions Group side-by-side -->
+            <div class="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto shrink-0">
+              <!-- 🔒 Register Graphics Project Button -->
+              <button onclick="openRegisterFormModal();" class="w-full sm:w-auto flex items-center justify-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-gold-500/15 to-gold-600/5 hover:from-gold-500/25 hover:to-gold-600/15 border border-gold-500/40 hover:border-gold-500/70 text-gold-400 hover:text-white active:translate-y-0.5 transition rounded-xl text-[10.5px] font-black uppercase tracking-wider select-none cursor-pointer shadow-md text-center">
+                <span class="text-xs leading-none shrink-0">🔒</span> <span>Register Graphics Project</span>
+              </button>
+
+              <!-- Views Switcher -->
+              <div class="flex items-center gap-1 bg-obsidian-950 p-1 rounded-xl border border-white/5 shadow-inner w-full sm:w-auto">
+                <button onclick="state.view='table'; render();" class="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[10px] font-black transition tracking-wider uppercase ${state.view === 'table' ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-obsidian-950 shadow-md' : 'text-obsidian-400 hover:text-white'}" title="Switch to Data Grid Worksheet">
+                  ${icons.grid} <span class="whitespace-nowrap">${tActive.viewTable}</span>
+                </button>
+                <button onclick="state.view='kanban'; render();" class="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[10px] font-black transition tracking-wider uppercase ${state.view === 'kanban' ? 'bg-gradient-to-r from-gold-500 to-gold-600 text-obsidian-950 shadow-md' : 'text-obsidian-400 hover:text-white'}" title="Switch to Milestone Pipelines">
+                  ${icons.dashboard} <span class="whitespace-nowrap">${tActive.viewKanban}</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Row: Filters stacked side-by-side with compact spacing -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end w-full">
+            
+            <!-- Manager selection -->
+            <div class="flex flex-col gap-1 min-w-0">
+              <span class="text-[9px] font-mono font-bold text-obsidian-400 uppercase tracking-widest text-center sm:text-left">Filter by Manager:</span>
+              <select onchange="state.filterPM=this.value; render();" class="bg-obsidian-950/90 border border-white/5 text-[11px] text-obsidian-100 rounded-xl py-2 px-3 focus:outline-none cursor-pointer hover:border-gold-500/30 font-semibold w-full text-center sm:text-left">
+                <option value="ALL" ${state.filterPM === "ALL" ? "selected" : ""}>${tActive.allPMs}</option>
+                ${dropMap.pms.map(p => `<option value="${p}" ${state.filterPM === p ? "selected" : ""}>${p}</option>`).join('')}
+              </select>
+            </div>
+
+            <!-- Artist selection -->
+            <div class="flex flex-col gap-1 min-w-0">
+              <span class="text-[9px] font-mono font-bold text-obsidian-400 uppercase tracking-widest text-center sm:text-left">Filter by Lead Artist:</span>
+              <select onchange="state.filterArtist=this.value; render();" class="bg-obsidian-950/90 border border-white/5 text-[11px] text-obsidian-100 rounded-xl py-2 px-3 focus:outline-none cursor-pointer hover:border-gold-500/30 font-semibold w-full text-center sm:text-left">
+                <option value="ALL" ${state.filterArtist === "ALL" ? "selected" : ""}>${tActive.allArtists}</option>
+                ${dropMap.artists.map(a => `<option value="${a}" ${state.filterArtist === a ? "selected" : ""}>${a}</option>`).join('')}
+              </select>
+            </div>
+
+            <!-- Tag selection dropdown filter selection -->
+            ${state.currentVersion === "B" ? `
+              <div class="flex flex-col gap-1 min-w-0">
+                <span class="text-[9px] font-mono font-bold text-obsidian-400 uppercase tracking-widest text-center sm:text-left">Tag label:</span>
+                <select onchange="state.filterTag=this.value; render();" class="bg-obsidian-950/90 border border-white/5 text-[11px] text-obsidian-100 rounded-xl py-2 px-3 focus:outline-none cursor-pointer hover:border-gold-500/30 font-semibold w-full text-center sm:text-left">
+                  <option value="ALL" ${state.filterTag === "ALL" ? "selected" : ""}>All Tags</option>
+                  ${['Urgent', 'In Review', 'Delivered', 'On Hold', 'Creative'].map(tag => {
+                    return `<option value="${tag}" ${state.filterTag === tag ? "selected" : ""}>${tag}</option>`;
+                  }).join('')}
+                </select>
+              </div>
+            ` : `
+              <!-- Balanced spacing placeholder for Non-B environments -->
+              <div class="hidden sm:block"></div>
+            `}
+
+          </div>
+        </div>
+      `;
+
+      // Sort indicator arrow generator
+      function getSortDir(field) {
+        if (state.sortField !== field) return "";
+        return state.sortAsc ? icons.sortUp : icons.sortDown;
+      }
+
+      // Worksheet List Grid table view
+      let worksheetDetailsHtml = "";
+      if (state.view === "table") {
+        worksheetDetailsHtml = `
+          <div class="overflow-hidden border border-white/[0.04] rounded-2xl bg-obsidian-950/40 relative no-print font-sans shadow-2xl">
+            <div class="overflow-x-auto overflow-y-auto max-h-[580px] w-full">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#0b0c11] border-b-2 border-gold-500/20 text-[10px] font-mono font-bold uppercase tracking-wider text-obsidian-100 select-none shadow-lg">
+                    <th onclick="triggerSort('chefDeProjet');" class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-6 cursor-pointer hover:text-gold-400 transition select-none">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-white">${tActive.colPM}</span>
+                        ${getSortDir('chefDeProjet')}
+                      </div>
+                    </th>
+                    <th onclick="triggerSort('motion');" class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-5 cursor-pointer hover:text-gold-400 transition select-none">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-white">${tActive.colArtist}</span>
+                        ${getSortDir('motion')}
+                      </div>
+                    </th>
+                    <th onclick="triggerSort('dateReception');" class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-5 cursor-pointer hover:text-gold-400 transition select-none">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-white">${tActive.colReceived}</span>
+                        ${getSortDir('dateReception')}
+                      </div>
+                    </th>
+                    <th class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-3 text-center text-gold-400 font-extrabold tracking-wider select-none">
+                      ${tActive.colDebriefs || "Debrief Gates"}
+                    </th>
+                    <th onclick="triggerSort('deadline');" class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-5 cursor-pointer hover:text-gold-400 transition select-none">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-white">${tActive.colDeadline}</span>
+                        ${getSortDir('deadline')}
+                      </div>
+                    </th>
+                    <th onclick="triggerSort('isCompleted');" class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-5 cursor-pointer hover:text-gold-400 transition select-none">
+                      <div class="flex items-center gap-1.5">
+                        <span class="text-white">${tActive.colTimeline}</span>
+                        ${getSortDir('isCompleted')}
+                      </div>
+                    </th>
+                    <th class="sticky top-0 bg-[#0c0d13] z-30 py-3.5 px-5 text-center text-[10px] text-white font-mono uppercase tracking-wider select-none">${tActive.colFolder}</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.02] text-[12.5px]">
+                  ${filteredResult.length === 0 ? `
+                    <tr>
+                      <td colspan="7" class="py-16 text-center text-obsidian-500 font-medium bg-obsidian-950/20">
+                        <div class="flex flex-col items-center gap-2 font-sans">
+                          <div class="text-3xl filter saturate-75 opacity-70">📭</div>
+                          <span class="text-sm font-bold text-obsidian-300 mt-2">${tActive.emptyTitle}</span>
+                          <span class="text-xs text-obsidian-550">${tActive.emptySubtitle}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ` : filteredResult.map(p => {
+                    const m = computeCampaignMetrics(p);
+                    const isSelected = state.selectedId === p.id;
+                    
+                    // progress bar styling
+                    let labelText = tActive[m.label] || m.label;
+                    if (m.status !== "completed" && m.remainingDays !== undefined && m.remainingDays !== null) {
+                      labelText = formatRemainingDays(m.remainingDays);
+                    }
+
+                    let badgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                    if (m.status === "overdue") badgeColor = "bg-rose-500/10 text-rose-400 border-rose-500/20 animate-pulse";
+                    else if (m.status === "urgent") badgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
+                    else if (m.status === "warning") badgeColor = "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+
+                    // Gate metrics debriefs indicators
+                    const debriefs = getProjectDebriefs(p);
+                    const dots = debriefs.length === 0 ? "" : `
+                      <div class="flex flex-wrap gap-1 justify-center pointer-events-none mt-1.5">
+                        ${debriefs.map((d, idx) => `
+                          <span class="w-1.5 h-1.5 rounded-full bg-gold-500/80 shadow shadow-gold-500/50" title="Debrief Gate ${idx+1}"></span>
+                        `).join('')}
+                      </div>
+                    `;
+
+                    // Custom Tag badges under PM name inside Version B mode
+                    const rowTagsHtml = (state.currentVersion === "B" && p.tags && p.tags.length > 0) ? `
+                      <div class="flex flex-wrap gap-1 mt-1.5 pointer-events-none">
+                        ${p.tags.map(tag => {
+                          return `<span class="px-2 py-0.5 text-[8px] rounded font-bold uppercase select-none ${getTagClass(tag)}">${tag}</span>`;
+                        }).join('')}
+                      </div>
+                    ` : "";
+
+                    // Visual Alert warning icon/pulse if approaching deadline (<= 3 days left and passive)
+                    const isApproaching = state.currentVersion === "B" && m.remainingDays !== undefined && m.remainingDays <= 3 && !p.isCompleted;
+
+                    return `
+                      <tr onclick="selectProject('${p.id}');" 
+                          class="hover:bg-white/[0.015] odd:bg-white/[0.002] transition-colors relative cursor-pointer ${isSelected ? 'bg-gold-500/[0.03] border-l-2 border-l-gold-500' : ''} ${isApproaching ? 'border-r-2 border-r-rose-500/30' : ''}">
+                        
+                        <!-- PM profile -->
+                        <td class="py-4 px-6 font-semibold text-white">
+                          <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-obsidian-900 border border-white/5 text-obsidian-300 font-mono text-[10px] font-black flex items-center justify-center shadow-inner shrink-0 leading-none select-none">
+                              ${p.chefDeProjet.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div class="min-w-0">
+                              <span class="block text-xs font-bold text-obsidian-100 truncate">${p.chefDeProjet}</span>
+                              ${rowTagsHtml}
+                            </div>
+                          </div>
+                        </td>
+
+                        <!-- Lead designer -->
+                        <td class="py-4 px-5 font-bold text-xs text-obsidian-200">
+                          <div class="flex items-center gap-1.5">
+                            <span class="opacity-60 text-xs">👤</span>
+                            <span class="truncate">${p.motion}</span>
+                          </div>
+                        </td>
+                        
+                        <!-- Reception Date -->
+                        <td class="py-4 px-5 font-mono text-xs text-obsidian-400 select-all">${cleanDateFormat(p.dateReception)}</td>
+                        
+                        <!-- Dynamic Debrief Gates List Column -->
+                        <td class="py-4 px-3">
+                          <div class="flex flex-col gap-1.5 items-center max-h-[110px] overflow-y-auto pr-1">
+                            ${debriefs.length === 0 ? `
+                              <span class="text-obsidian-600 font-medium italic select-none">—</span>
+                            ` : debriefs.map((dt, idx) => `
+                              <span class="inline-flex items-center gap-1.5 text-[10.5px] bg-gold-950/40 border border-gold-500/15 text-gold-400/90 px-2.5 py-0.5 rounded-lg font-mono select-none">
+                                <strong class="text-[8.5px] font-black text-gold-500 select-none uppercase">G${idx+1}</strong>
+                                <span>${cleanDateFormat(dt)}</span>
+                              </span>
+                            `).join('')}
+                          </div>
+                        </td>
+                        
+                        <!-- Deadline Date -->
+                        <td class="py-4 px-5 font-mono text-xs text-obsidian-400 select-all ${isApproaching ? 'text-rose-400 font-bold' : ''}">
+                          <div class="flex items-center gap-2">
+                            ${isApproaching ? `<span class="inline-block w-2 h-2 rounded-full bg-rose-500 animate-ping shrink-0" title="Approaching Deadline Alert"></span>` : ''}
+                            <span class="font-bold">${cleanDateFormat(p.deadline)}</span>
+                          </div>
+                        </td>
+                        
+                        <!-- Pipeline Status Indicator -->
+                        <td class="py-4 px-5 space-y-1.5 select-none text-[11px]">
+                          <div class="flex items-center justify-between font-semibold gap-4">
+                            <span class="border rounded-lg px-2 py-0.5 font-black uppercase text-[10px] tracking-wider ${badgeColor}">
+                              ${labelText}
+                            </span>
+                          </div>
+                          <div class="text-[9.5px] text-obsidian-500 space-y-0.5 font-mono leading-normal">
+                            <div class="flex items-center gap-1 whitespace-nowrap">
+                              <span class="text-obsidian-650 font-bold">→</span>
+                              <span>Total Duration: <strong class="text-obsidian-300 font-bold">${m.totalDays || 0} days</strong></span>
+                            </div>
+                          </div>
+                          <div class="pt-0.5 pointer-events-none">
+                            ${dots}
+                          </div>
+                        </td>
+
+                        <!-- Folder Hub copying button -->
+                        <td class="py-4 px-5 text-center">
+                          ${p.lienProjet ? `
+                            <button type="button" onclick="event.stopPropagation(); copyText('${p.lienProjet.replace(/\\/g, '\\\\')}');" 
+                                    class="p-2.5 rounded-xl bg-obsidian-900 border border-white/5 text-gold-500 hover:text-white hover:border-gold-500/40 hover:bg-gold-500/5 transition shadow-sm" title="Copy Folder Path clipboard">
+                              ${icons.copy}
+                            </button>
+                          ` : '<span class="text-obsidian-600 block select-none font-bold italic">—</span>'}
+                        </td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } else {
+        // Kanban view column staging arrays (4 modern columns)
+        const columns = [
+          { key: "backlog", title: "Review Backlog", color: "border-obsidian-700/50 bg-obsidian-900/10", ribbon: "bg-obsidian-600" },
+          { key: "db_initial", title: "Debrief Gates 1 - 2", color: "border-cyan-500/20 bg-cyan-500/[0.02]", ribbon: "bg-cyan-500" },
+          { key: "db_advanced", title: "Debrief Gates 3+", color: "border-amber-500/20 bg-amber-500/[0.02]", ribbon: "bg-amber-500" },
+          { key: "complete", title: tActive.metricCompleted, color: "border-emerald-500/20 bg-emerald-500/[0.02]", ribbon: "bg-emerald-500" }
+        ];
+
+        // Sort projects into pipelines
+        const pipelines = { backlog: [], db_initial: [], db_advanced: [], complete: [] };
+        
+        filteredResult.forEach(p => {
+          if (p.isCompleted) {
+            pipelines.complete.push(p);
+          } else {
+            const numGates = getProjectDebriefs(p).length;
+            if (numGates === 0) {
+              pipelines.backlog.push(p);
+            } else if (numGates <= 2) {
+              pipelines.db_initial.push(p);
+            } else {
+              pipelines.db_advanced.push(p);
+            }
+          }
+        });
+
+        worksheetDetailsHtml = `
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 no-print font-sans">
+            ${columns.map(col => {
+              const list = pipelines[col.key];
+              return `
+                <div class="glass-card rounded-2xl p-4 border ${col.color} space-y-4 relative overflow-hidden flex flex-col min-h-[480px]">
+                  <div class="absolute top-0 left-0 right-0 h-[1.5px] ${col.ribbon} opacity-60"></div>
+                  
+                  <div class="flex items-center justify-between border-b border-white/[0.04] pb-2 shrink-0">
+                    <span class="text-xs font-bold text-white uppercase tracking-wider">${col.title}</span>
+                    <span class="px-2 py-0.5 rounded-md bg-obsidian-950 border border-white/5 text-[10.5px] font-mono font-bold text-gold-400 leading-none">${list.length}</span>
+                  </div>
+
+                  <div class="space-y-3.5 min-h-[350px]">
+                    ${list.length === 0 ? `
+                      <div class="h-[250px] flex items-center justify-center border border-dashed border-white/[0.03] rounded-xl text-[11px] text-obsidian-600 font-medium italic select-none">
+                        Empty Stage
+                      </div>
+                    ` : list.map(p => {
+                      const computed = computeCampaignMetrics(p);
+                      const isSelected = p.id === state.selectedId;
+                      let deadlineLabel = tActive[computed.label] || computed.label;
+                      if (computed.status !== "completed" && computed.remainingDays !== undefined && computed.remainingDays !== null) {
+                        deadlineLabel = formatRemainingDays(computed.remainingDays);
+                      }
+
+                      // Dynamic tags on Kanban Card inside Version B
+                      const kanbanTagsHtml = (state.currentVersion === "B" && p.tags && p.tags.length > 0) ? `
+                        <div class="flex flex-wrap gap-1 mt-1 pointer-events-none">
+                          ${p.tags.map(tag => {
+                            return `<span class="px-1.5 py-0.5 text-[8.5px] rounded font-bold uppercase select-none ${getTagClass(tag)}">${tag}</span>`;
+                          }).join('')}
+                        </div>
+                      ` : "";
+
+                      // Pulsing alert ring/glow for imminent deadlines
+                      const isKApproaching = state.currentVersion === "B" && computed.remainingDays !== undefined && computed.remainingDays <= 3 && !p.isCompleted;
+                      const cardGlowClass = isKApproaching ? 'border-rose-500/40 shadow-lg shadow-rose-500/5 animate-pulse-slow' : '';
+
+                      return `
+                        <div onclick="selectProject('${p.id}');" 
+                             class="p-4 bg-obsidian-950/80 border border-white/5 hover:border-white/15 rounded-xl cursor-pointer transition-all space-y-3 ${isSelected ? 'ring-1 ring-gold-500 shadow-md shadow-gold-500/5' : ''} ${cardGlowClass}">
+                          
+                          <div class="space-y-1.5">
+                            <h4 class="text-xs font-bold text-white leading-tight min-h-[16px]">${p.chefDeProjet}</h4>
+                            <p class="text-[10.5px] text-obsidian-400 font-semibold flex items-center gap-1 select-all">
+                              👤 ${p.motion}
+                            </p>
+                            ${kanbanTagsHtml}
+                          </div>
+
+                          <div class="space-y-1 border-t border-white/[0.03] pt-2">
+                            <span class="text-[9px] font-mono uppercase text-obsidian-500 block">Deadline:</span>
+                            <span class="text-[11px] font-semibold text-rose-400 font-mono block select-all">${cleanDateFormat(p.deadline)}</span>
+                          </div>
+
+                          ${p.autreInformation ? `
+                            <p class="text-[10px] text-obsidian-550 italic leading-relaxed border-t border-white/[0.03] pt-2 line-clamp-2">${p.autreInformation}</p>
+                          ` : ''}
+
+                          <div class="flex items-center justify-between gap-2 border-t border-white/[0.03] pt-2 text-[10px]">
+                            <span class="font-bold text-${computed.color}-400 lowercase font-mono">${deadlineLabel}</span>
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 3. COMPILE PARTS TOGETHER
+      // Version B Advanced Components Rendering
+      let analyticsDashboardBHtml = "";
+      let ganttChartHtml = "";
+      let advancedSimulationsHtml = "";
+      let drawerHtml = "";
+      let registerModalHtml = "";
+
+      if (state.currentVersion === "B") {
+        // Compute advanced production stats
+        const designersGroup = {};
+        const pmGroup = {};
+        let totalCompletedDays = 0;
+        let completedWithDatesCount = 0;
+        
+        state.projects.forEach(p => {
+          if (p.motion) {
+            if (!designersGroup[p.motion]) {
+              designersGroup[p.motion] = { active: 0, completed: 0 };
+            }
+            if (p.isCompleted) designersGroup[p.motion].completed++;
+            else designersGroup[p.motion].active++;
+          }
+          if (p.chefDeProjet) {
+            if (!pmGroup[p.chefDeProjet]) {
+              pmGroup[p.chefDeProjet] = { active: 0, completed: 0 };
+            }
+            if (p.isCompleted) pmGroup[p.chefDeProjet].completed++;
+            else pmGroup[p.chefDeProjet].active++;
+          }
+          
+          if (p.isCompleted) {
+            const metrics = computeCampaignMetrics(p);
+            if (metrics.totalDays > 0) {
+              totalCompletedDays += metrics.totalDays;
+              completedWithDatesCount++;
+            }
+          }
+        });
+
+        const avgDays = completedWithDatesCount > 0 ? (totalCompletedDays / completedWithDatesCount).toFixed(1) : "—";
+
+        // Find upcoming pressing warnings list (days to deadline <= 3 and active)
+        const pressingCampaigns = state.projects.filter(p => {
+          if (p.isCompleted) return false;
+          const m = computeCampaignMetrics(p);
+          return m.remainingDays !== undefined && m.remainingDays <= 3;
+        });
+
+        analyticsDashboardBHtml = `
+          <!-- Designer Workload Analytics Card (Expanded layout) -->
+          <div class="glass-card rounded-2xl p-5 border border-white/[0.05] bg-gradient-to-br from-obsidian-950 to-obsidian-900/60 relative overflow-hidden transition-all duration-300 no-print font-sans">
+            <div class="absolute top-0 left-0 right-0 h-[1.5px] bg-gold-500 opacity-40"></div>
+            <div onclick="toggleSection('activeArtists');" class="flex items-center justify-between border-b border-white/[0.04] pb-2.5 cursor-pointer hover:text-white transition select-none">
+              <h3 class="text-[9.5px] font-mono font-bold uppercase tracking-widest text-obsidian-300">
+                🎨 Active Artists Workload
+              </h3>
+              <span class="text-[8px] font-mono font-semibold text-obsidian-400 bg-white/[0.02] border border-white/5 px-2 py-0.5 rounded-lg">
+                ${state.collapsedSections?.activeArtists ? 'Expand ⏵' : 'Collapse ⏷'}
+              </span>
+            </div>
+            
+            <div class="mt-4 transition-all duration-300" style="${state.collapsedSections?.activeArtists ? 'display: none !important;' : ''}">
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                ${Object.keys(designersGroup).length === 0 ? `
+                  <p class="text-xs text-obsidian-550 italic text-center py-4 col-span-full">No active workloads reported</p>
+                ` : Object.keys(designersGroup).map(artist => {
+                  const grp = designersGroup[artist];
+                  const total = grp.active + grp.completed;
+                  const percent = total > 0 ? Math.round((grp.completed / total) * 100) : 0;
+                  return `
+                    <div class="bg-obsidian-950/40 p-3.5 rounded-xl border border-white/[0.03] space-y-2.5 hover:border-gold-500/15 transition-all duration-300">
+                      <div class="space-y-1">
+                        <span class="text-xs font-black text-white block truncate">👤 ${artist}</span>
+                        <div class="flex items-center justify-between text-[9px] font-mono font-semibold text-obsidian-450 leading-none">
+                          <span>Delivered: ${grp.completed}</span>
+                          <span>Active: ${grp.active}</span>
+                        </div>
+                      </div>
+                      <div class="w-full bg-obsidian-950 rounded-full h-1.5 overflow-hidden border border-white/5">
+                        <div class="bg-gradient-to-r from-gold-500 to-gold-400 h-full rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+
+        // Interactive Gantt Timeline representations has been removed as per user instruction
+        ganttChartHtml = "";
+
+        // Box-Muller transform for dynamic Normal Distribution simulation
+        function boxMullerTransform(mean, std) {
+          let u = 0, v = 0;
+          while (u === 0) u = Math.random();
+          while (v === 0) v = Math.random();
+          let r = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+          return r * Math.max(0.1, std) + mean;
+        }
+
+        // Calculate Resource Loading Density Matrix
+        const activeCampaigns = state.projects.filter(p => !p.isCompleted && p.motion);
+        const uniqueArtists = Array.from(new Set(activeCampaigns.map(p => p.motion))).filter(Boolean).sort();
+        
+        const nowTime = Date.now();
+        const oneDayMs = 24 * 60 * 60 * 1000;
+        
+        // Setup 4 week segments starting from today
+        const wSegments = [
+          { name: "Week 1", label: "Days 1–7", start: nowTime, end: nowTime + 7 * oneDayMs },
+          { name: "Week 2", label: "Days 8–14", start: nowTime + 8 * oneDayMs, end: nowTime + 14 * oneDayMs },
+          { name: "Week 3", label: "Days 15–21", start: nowTime + 15 * oneDayMs, end: nowTime + 21 * oneDayMs },
+          { name: "Week 4", label: "Days 22–28", start: nowTime + 22 * oneDayMs, end: nowTime + 28 * oneDayMs }
+        ];
+
+        let densityRowsHtml = "";
+        if (uniqueArtists.length === 0) {
+          densityRowsHtml = `
+            <tr>
+              <td colspan="5" class="text-center py-6 text-obsidian-550 italic text-xs select-none">
+                No active motion artists with scheduled pipelines.
+              </td>
+            </tr>
+          `;
+        } else {
+          uniqueArtists.forEach(artist => {
+            const artistProjects = activeCampaigns.filter(p => p.motion === artist);
+            let segmentsCells = "";
+            
+            wSegments.forEach(seg => {
+              // Count how many projects of this artist overlap with this week segment
+              const overlapCount = artistProjects.filter(p => {
+                if (!p.dateReception || !p.deadline) return false;
+                const pStart = new Date(p.dateReception).getTime();
+                const pEnd = new Date(p.deadline).getTime();
+                return pStart <= seg.end && pEnd >= seg.start;
+              }).length;
+              
+              let cellBg = "bg-obsidian-950/20 text-obsidian-500 border border-white/[0.02]";
+              let cellLabel = "0 Active";
+              let statusIndicator = "🟢";
+              if (overlapCount === 1) {
+                cellBg = "bg-cyan-500/[0.06] text-cyan-400 border border-cyan-500/15";
+                cellLabel = "1 Campaign";
+                statusIndicator = "🟢";
+              } else if (overlapCount === 2) {
+                cellBg = "bg-amber-500/[0.08] text-amber-400 border border-amber-500/20";
+                cellLabel = "2 Campaigns";
+                statusIndicator = "🟡";
+              } else if (overlapCount >= 3) {
+                cellBg = "bg-rose-500/[0.12] text-rose-400 border border-rose-500/30 animate-pulse";
+                cellLabel = `${overlapCount} Overloaded`;
+                statusIndicator = "🔴";
+              }
+              
+              segmentsCells += `
+                <td class="p-3 text-center transition">
+                  <div class="rounded-xl py-2 px-1 ${cellBg} flex flex-col items-center justify-center gap-1">
+                    <span class="text-[10px] font-mono leading-none font-bold uppercase tracking-wider">${statusIndicator} ${cellLabel}</span>
+                  </div>
+                </td>
+              `;
+            });
+            
+            densityRowsHtml += `
+              <tr class="border-b border-white/[0.02] hover:bg-white/[0.01] transition-all duration-150">
+                <td class="p-3 text-left font-bold text-white text-xs select-none">
+                  👤 ${artist}
+                  <span class="text-[9px] text-obsidian-450 block font-normal font-mono mt-0.5">${artistProjects.length} total active</span>
+                </td>
+                ${segmentsCells}
+              </tr>
+            `;
+          });
+        }
+
+        // Compute Monte Carlo-style Risk Score for ALL Lead Designers
+        const allDesignersForRisk = Array.from(new Set(state.projects.map(p => p.motion).filter(val => val && val.trim() !== "")));
+        let riskCardsHtml = "";
+        
+        if (allDesignersForRisk.length === 0) {
+          riskCardsHtml = `
+            <div class="col-span-full text-center py-8 text-obsidian-550 text-xs italic font-sans select-none animate-pulse">
+              No Lead Designers registered to compute Monte Carlo risk probability matrices.
+            </div>
+          `;
+        } else {
+          // Sort designers: those with active projects first, then by risk score
+          const designerCards = allDesignersForRisk.map(designer => {
+            const activeProjects = state.projects.filter(p => !p.isCompleted && p.motion === designer);
+            const concurrentCount = activeProjects.length;
+            
+            let riskValue = 0;
+            let daysRemaining = Infinity;
+            let meanRequiredDays = 0;
+            let warningText = "Idle or available for assignment.";
+            let mostUrgentProjectName = "No active campaigns";
+            let daysText = "Idle";
+            
+            if (activeProjects.length > 0) {
+              // Find the most urgent project
+              let mostUrgent = null;
+              let minDays = Infinity;
+              activeProjects.forEach(p => {
+                const m = computeCampaignMetrics(p);
+                const rem = m.remainingDays !== undefined ? m.remainingDays : 999;
+                if (rem < minDays) {
+                  minDays = rem;
+                  mostUrgent = { p, m };
+                }
+              });
+              
+              if (mostUrgent) {
+                const { p, m } = mostUrgent;
+                daysRemaining = m.remainingDays !== undefined ? m.remainingDays : 1;
+                const standardSpan = m.totalDays > 0 ? m.totalDays : 6;
+                mostUrgentProjectName = p.folder || "Untitled Campaign";
+                daysText = `${daysRemaining}d left`;
+                
+                // Simulation model
+                const trialsCount = 500;
+                let onTimeSucc = 0;
+                const volatility = 0.30;
+                
+                const artistLoadMultiplier = 1.0 + 0.12 * Math.max(0, concurrentCount - 1);
+                meanRequiredDays = Math.max(1.5, standardSpan * 0.70) * artistLoadMultiplier;
+                
+                for (let i = 0; i < trialsCount; i++) {
+                  const simulatedScopeDays = boxMullerTransform(meanRequiredDays, meanRequiredDays * volatility);
+                  if (simulatedScopeDays <= daysRemaining) {
+                    onTimeSucc++;
+                  }
+                }
+                
+                const pSuccess = onTimeSucc / trialsCount;
+                riskValue = Math.max(0, Math.min(100, Math.round((1.0 - pSuccess) * 100)));
+                
+                if (riskValue > 75) {
+                  warningText = "Critical stress. Timeline buffer recommended.";
+                } else if (riskValue > 35) {
+                  warningText = "Moderate tension. Monitor pipeline.";
+                } else {
+                  warningText = "Optimal delivery schedule calculated.";
+                }
+              }
+            }
+            
+            return {
+              designer,
+              activeCount: concurrentCount,
+              riskValue,
+              daysRemaining,
+              daysText,
+              meanRequiredDays,
+              warningText,
+              mostUrgentProjectName
+            };
+          }).sort((a, b) => {
+            if (a.activeCount !== b.activeCount) {
+              return b.activeCount - a.activeCount; // Active first
+            }
+            return b.riskValue - a.riskValue; // Higher risk first
+          });
+          
+          designerCards.forEach(card => {
+            let statusTextColor = "text-emerald-400";
+            let statusBorderColor = "border-emerald-500/10 hover:border-emerald-500/25";
+            let statusBadge = "bg-emerald-500/10 text-emerald-400 border-emerald-500/15";
+            
+            // Check if this specific designer has any of the alerting pressure campaigns (remainingDays <= 3)
+            const designerProjects = state.projects.filter(p => !p.isCompleted && p.motion === card.designer);
+            const urgentProjectsCount = designerProjects.filter(p => {
+              const m = computeCampaignMetrics(p);
+              return m.remainingDays !== undefined && m.remainingDays <= 3;
+            }).length;
+
+            if (card.activeCount === 0) {
+              statusTextColor = "text-cyan-400";
+              statusBorderColor = "border-cyan-500/10 hover:border-cyan-500/25";
+              statusBadge = "bg-cyan-500/10 text-cyan-400 border-cyan-500/15";
+            } else if (card.riskValue > 75 || urgentProjectsCount > 0) {
+              statusTextColor = "text-rose-455";
+              statusBorderColor = "border-rose-500/20 hover:border-rose-500/35";
+              statusBadge = "bg-rose-500/10 text-rose-455 border-rose-500/15 animate-pulse-slow";
+            } else if (card.riskValue > 35) {
+              statusTextColor = "text-amber-400";
+              statusBorderColor = "border-amber-500/15 hover:border-amber-500/30";
+              statusBadge = "bg-amber-500/10 text-amber-400 border-amber-500/15";
+            }
+            
+            riskCardsHtml += `
+              <div class="p-3 bg-obsidian-950/60 border ${statusBorderColor} rounded-xl flex flex-col justify-between gap-2.5 transition duration-200">
+                <div class="space-y-1 flex flex-col min-w-0">
+                  <div class="flex items-start justify-between gap-1.5 min-w-0">
+                    <span class="text-xs font-black text-white truncate text-left block max-w-[115px] select-none font-sans" title="${card.designer}">
+                      ${urgentProjectsCount > 0 ? '🚨' : '👤'} ${card.designer}
+                    </span>
+                    <span class="px-1.5 py-0.5 rounded-lg border text-[8px] font-mono leading-none font-black select-none shrink-0 ${statusBadge}">
+                      ${card.riskValue}% RISK
+                    </span>
+                  </div>
+                  <p class="text-[9px] ${urgentProjectsCount > 0 ? 'text-rose-400' : 'text-obsidian-450'} text-left font-bold select-none font-mono">
+                    ${card.activeCount} active pipelines ${urgentProjectsCount > 0 ? `(${urgentProjectsCount} urgent)` : ''}
+                  </p>
+                </div>
+                
+                <div class="space-y-1.5 pt-1.5 border-t border-white/[0.02]">
+                  <!-- Progress Bar Representation -->
+                  <div class="space-y-1 select-none">
+                    <div class="flex items-center justify-between text-[7.5px] font-mono text-obsidian-455">
+                      <span class="truncate max-w-[85px] font-semibold" title="${card.mostUrgentProjectName}">${card.activeCount > 0 ? card.daysText : 'No active projects'}</span>
+                      <span>Target: ${card.activeCount > 0 ? card.meanRequiredDays.toFixed(1) + 'd' : '—'}</span>
+                    </div>
+                    <div class="h-1 w-full bg-obsidian-900 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full ${card.activeCount === 0 ? 'bg-cyan-500' : (card.riskValue > 75 || urgentProjectsCount > 0) ? 'bg-rose-500' : card.riskValue > 35 ? 'bg-amber-500' : 'bg-emerald-500'}" style="width: ${card.activeCount === 0 ? 100 : 100 - card.riskValue}%"></div>
+                    </div>
+                  </div>
+                  
+                  <p class="text-[8.5px] text-obsidian-450 italic text-left select-none leading-none truncate" title="${urgentProjectsCount > 0 ? 'Urgent campaign requires timeline buffer.' : card.warningText}">
+                    ${urgentProjectsCount > 0 ? '⚠️ High distress. Close deadline detected!' : card.warningText}
+                  </p>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        advancedSimulationsHtml = `
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 no-print font-sans">
+            
+            <!-- Matrix Component -->
+            <div class="glass-card rounded-2xl border border-white/[0.05] bg-gradient-to-br from-obsidian-950 to-obsidian-900/60 relative overflow-hidden flex flex-col justify-start transition-all duration-300 ${state.collapsedSections?.resourceMatrix ? 'h-auto' : 'h-[410px]'}">
+              <div class="absolute top-0 left-0 right-0 h-[1.5px] bg-cyan-500 opacity-40 font-mono"></div>
+              
+              <div onclick="toggleSection('resourceMatrix');" class="px-5 md:px-6 pt-5 md:pt-6 pb-3 border-b border-white/[0.04] shrink-0 flex items-center justify-between cursor-pointer select-none hover:bg-white/[0.01] transition">
+                <div class="text-left">
+                  <h3 class="text-xs font-mono font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 to-cyan-500">
+                    ⚡ Resource Loading Density Matrix
+                  </h3>
+                  <p class="text-[10px] text-obsidian-450 leading-relaxed mt-1">
+                    Real-time workload distribution analysis showing forecasted concurrent pipelines over a rolling 4-week window.
+                  </p>
+                </div>
+                <span class="text-[8px] font-mono font-semibold text-obsidian-400 bg-white/[0.02] border border-white/5 px-2 py-1 rounded-lg shrink-0 select-none">
+                  ${state.collapsedSections?.resourceMatrix ? 'Expand ⏵' : 'Collapse ⏷'}
+                </span>
+              </div>
+              
+              <div class="overflow-x-auto flex-1 px-5 md:px-6 py-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent transition-all" style="${state.collapsedSections?.resourceMatrix ? 'display: none !important;' : ''}">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b border-white/[0.04] text-[9.5px] font-mono uppercase text-obsidian-450 tracking-wider">
+                      <th class="p-3 font-extrabold pb-2 select-none">Motion Artist</th>
+                      ${wSegments.map(seg => `
+                        <th class="p-3 text-center font-extrabold pb-2 select-none">${seg.name}<span class="block text-[8px] font-normal lowercase max-w-[80px] mx-auto text-obsidian-550">${seg.label}</span></th>
+                      `).join('')}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${densityRowsHtml}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+ 
+            <!-- Alerting Pressures Component (Replacing Monte Carlo) -->
+            <div class="glass-card rounded-2xl border border-white/[0.05] bg-gradient-to-br from-obsidian-950 to-obsidian-900/60 relative overflow-hidden flex flex-col transition-all duration-300 ${state.collapsedSections?.riskScore ? 'h-auto' : 'h-[410px]'}">
+              <div class="absolute top-0 left-0 right-0 h-[1.5px] bg-rose-500 opacity-40"></div>
+              
+              <div onclick="toggleSection('riskScore');" class="px-5 md:px-6 pt-5 md:pt-6 pb-3 border-b border-white/[0.04] shrink-0 flex items-center justify-between cursor-pointer select-none hover:bg-white/[0.01] transition text-left">
+                <div class="text-left w-full mr-4">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="text-xs font-mono font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-rose-200 to-rose-450">
+                      🚨 Alerting Pressures & Imminent Deadlines
+                    </h3>
+                    ${pressingCampaigns.length > 0 ? `
+                      <span class="px-2 py-0.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[8px] font-mono tracking-wider font-extrabold shrink-0 animate-pulse">
+                        CRITICAL ALERTS (${pressingCampaigns.length})
+                      </span>
+                    ` : ""}
+                  </div>
+                  <p class="text-[9.5px] text-obsidian-450 leading-relaxed mt-1">
+                    Real-time monitoring of active campaigns with approaching deadlines (≤ 3 days). Click any card for rapid management.
+                  </p>
+                </div>
+                <span class="text-[8px] font-mono font-semibold text-obsidian-400 bg-white/[0.02] border border-white/5 px-2 py-1 rounded-lg shrink-0 select-none">
+                  ${state.collapsedSections?.riskScore ? 'Expand ⏵' : 'Collapse ⏷'}
+                </span>
+              </div>
+              
+              <div class="flex-1 overflow-y-auto p-4 md:p-5 pt-3 mt-0 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent transition-all" style="${state.collapsedSections?.riskScore ? 'display: none !important;' : ''}">
+                ${pressingCampaigns.length === 0 ? `
+                  <div class="h-full flex flex-col items-center justify-center text-center py-12 px-4 space-y-3">
+                    <span class="text-3xl animate-bounce-slow">✨</span>
+                    <div class="space-y-1">
+                      <p class="text-xs font-bold text-white uppercase tracking-wider font-mono">All Clear & On Schedule</p>
+                      <p class="text-[10px] text-obsidian-450 max-w-xs leading-relaxed">No motion designer currently reports under active schedule or immediate deadline pressure.</p>
+                    </div>
+                  </div>
+                ` : `
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    ${pressingCampaigns.map(p => {
+                      const m = computeCampaignMetrics(p);
+                      
+                      // Highlight classes based on urgency
+                      let statusBadgeBg = "bg-rose-500/10 text-rose-400 border-rose-500/15";
+                      let borderClass = "border-rose-500/15 hover:border-rose-450/40";
+                      let indicatorText = "";
+                      
+                      if (m.remainingDays < 0) {
+                        indicatorText = `🔴 ${Math.abs(m.remainingDays)} ${Math.abs(m.remainingDays) === 1 ? 'day' : 'days'} Overdue`;
+                        statusBadgeBg = "bg-rose-600/20 text-rose-400 border-rose-500/30 animate-pulse";
+                        borderClass = "border-rose-500/30 hover:border-rose-450/50 shadow-md shadow-rose-950/10";
+                      } else if (m.remainingDays === 0) {
+                        indicatorText = "🟠 Due Today!";
+                        statusBadgeBg = "bg-amber-500/20 text-amber-400 border-amber-500/30 animate-pulse";
+                        borderClass = "border-amber-500/30 hover:border-amber-400/50 shadow-md shadow-amber-950/10";
+                      } else {
+                        indicatorText = `🟡 ${m.remainingDays} ${m.remainingDays === 1 ? 'day' : 'days'} left`;
+                        statusBadgeBg = "bg-amber-500/10 text-amber-400 border-amber-500/15";
+                        borderClass = "border-amber-500/15 hover:border-amber-400/30";
+                      }
+                      
+                      return `
+                        <div onclick="selectProject('${p.id}');" class="p-3.5 bg-obsidian-950/75 border ${borderClass} rounded-xl flex flex-col justify-between gap-3.5 hover:bg-white/[0.01]/10 hover:border-rose-500/35 transition-all duration-300 cursor-pointer select-none">
+                          <div class="space-y-2">
+                            <!-- Motion Artist Head -->
+                            <div class="flex items-center justify-between gap-2 border-b border-white/[0.03] pb-2">
+                              <span class="text-[11px] font-black text-rose-300 tracking-wide font-sans truncate max-w-[140px]" title="Lead Artist">
+                                👤 ${p.motion}
+                              </span>
+                              <span class="px-2 py-0.5 rounded-lg border text-[8.5px] font-mono leading-none font-black select-none shrink-0 ${statusBadgeBg}">
+                                ${indicatorText}
+                              </span>
+                            </div>
+                            
+                            <!-- Project Name (المشروع الذي يعمل عليه) -->
+                            <div class="space-y-1 text-left">
+                              <span class="text-[9px] font-mono uppercase text-obsidian-500 block leading-none">Campaign Project:</span>
+                              <p class="text-xs font-bold text-white truncate max-w-[190px] leading-tight" title="${p.chefDeProjet}">
+                                📂 ${p.chefDeProjet}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <!-- Progress Bar & Details -->
+                          <div class="space-y-1.5 pt-2 border-t border-white/[0.03]">
+                            <div class="flex items-center justify-between text-[8px] font-mono font-semibold text-obsidian-450 border-white/[0.02]">
+                              <span>Deadline: ${cleanDateFormat(p.deadline)}</span>
+                              <span>${m.percentage}% Elapsed</span>
+                            </div>
+                            <div class="h-1 w-full bg-obsidian-900 rounded-full overflow-hidden border border-white/5">
+                              <div class="h-full rounded-full bg-gradient-to-r from-rose-500 to-amber-500 transition-all duration-500" style="width: ${m.percentage}%"></div>
+                            </div>
+                            ${p.autreInformation ? `
+                              <p class="text-[8.5px] text-obsidian-500 italic truncate max-w-full block mt-1" title="${p.autreInformation}">
+                                💬 ${p.autreInformation}
+                              </p>
+                            ` : ""}
+                          </div>
+                        </div>
+                      `;
+                    }).join("")}
+                  </div>
+                `}
+              </div>
+            </div>
+
+            <!-- Admin Email Automation Hub Component -->
+            <div class="glass-card rounded-2xl border border-white/[0.05] bg-gradient-to-br from-obsidian-950 to-obsidian-900/60 relative overflow-hidden flex flex-col transition-all duration-300 ${state.collapsedSections?.emailHub ? 'h-auto' : 'h-[410px]'}" id="email-automation-hub">
+              <div class="absolute top-0 left-0 right-0 h-[1.5px] bg-amber-500 opacity-40"></div>
+              
+              <div onclick="toggleSection('emailHub');" class="px-5 md:px-6 pt-5 md:pt-6 pb-3 border-b border-white/[0.04] shrink-0 flex items-center justify-between cursor-pointer select-none hover:bg-white/[0.01] transition text-left">
+                <div class="text-left mr-4">
+                  <h3 class="text-xs font-mono font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">
+                    📧 Email Status Alerts Hub
+                  </h3>
+                  <p class="text-[9.5px]/relaxed text-obsidian-450 mt-1">
+                    Configure daily automated digests, schedule tracking reports, and dispatch simulated emails to the systems administrator.
+                  </p>
+                </div>
+                <span class="text-[8px] font-mono font-semibold text-obsidian-400 bg-white/[0.02] border border-white/5 px-2 py-1 rounded-lg shrink-0 select-none">
+                  ${state.collapsedSections?.emailHub ? 'Expand ⏵' : 'Collapse ⏷'}
+                </span>
+              </div>
+
+              <div class="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent transition-all" style="${state.collapsedSections?.emailHub ? 'display: none !important;' : ''}">
+                <div class="space-y-3.5">
+                  <!-- Configuration inputs -->
+                  <div class="grid grid-cols-1 gap-3.5">
+                    <div class="flex flex-col gap-1.5 text-left">
+                      <label class="text-[9px] font-mono font-bold text-obsidian-400 uppercase tracking-wider">Admin Recipient Email Address</label>
+                      <input type="email" id="admin-email-input" oninput="updateAdminEmail(this.value); event.stopPropagation();" value="${state.adminEmail || 'zakileduc14@gmail.com'}" class="w-full bg-obsidian-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-gold-500/40 font-mono" placeholder="admin@example.com" />
+                    </div>
+
+                    <!-- Dispatch Controls -->
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white/[0.01] p-3 rounded-xl border border-white/[0.03]">
+                      <div class="flex-1 text-left">
+                        <span class="text-[10px] font-bold text-white block uppercase tracking-wide">Automated Daily Dispatch</span>
+                        <span class="text-[9px] text-obsidian-450 block leading-tight">Send a brief consolidated pipeline report first thing in the morning.</span>
+                      </div>
+                      
+                      <button onclick="toggleDailyAlerts(); event.stopPropagation();" class="shrink-0 px-3 py-1.5 rounded-lg border text-[9px] font-bold tracking-wider uppercase transition-all duration-150 ${state.emailAlertsEnabled ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-obsidian-950 border-white/5 text-obsidian-400 hover:text-white'}">
+                        ${state.emailAlertsEnabled ? '● Armed & Active' : '○ Standby'}
+                      </button>
+                    </div>
+
+                    <!-- Direct Send Button with beautiful loading state -->
+                    <div>
+                      <button onclick="dispatchDailyEmailNow(); event.stopPropagation();" ${state.emailDispatching ? 'disabled' : ''} class="w-full py-2.5 px-4 rounded-xl text-[10.5px] font-black uppercase tracking-wider transition-all duration-200 shadow-md ${state.emailDispatching ? 'bg-amber-500/20 text-amber-300 border border-amber-500/10 cursor-not-allowed animate-pulse' : 'bg-gradient-to-r from-amber-500/15 to-amber-600/5 hover:from-amber-500/25 hover:to-amber-600/15 border border-amber-500/40 hover:border-amber-500/70 text-amber-400 hover:text-white active:translate-y-0.5'} flex items-center justify-center gap-2 select-none cursor-pointer">
+                        ${state.emailDispatching ? `
+                          <svg class="animate-spin h-3.5 w-3.5 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span>Compiling Report & Transmitting...</span>
+                        ` : `
+                          <span>⚡ Trigger Simulated Daily Dispatch</span>
+                        `}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Historical Logs -->
+                  <div class="border-t border-white/[0.04] pt-3.5 text-left">
+                    <div class="flex items-center justify-between mb-2 select-none">
+                      <span class="text-[9px] font-mono font-bold text-obsidian-400 uppercase tracking-widest">Email Telemetry Dispatch Logs</span>
+                      ${state.emailLog?.length > 0 ? `<button onclick="clearEmailLogs(); event.stopPropagation();" class="text-[9px] font-bold text-rose-450/90 hover:text-rose-400 transition select-none cursor-pointer">Purge Logs</button>` : ''}
+                    </div>
+                    
+                    <div class="space-y-1.5 max-h-[140px] overflow-y-auto pr-1">
+                      ${!state.emailLog || state.emailLog.length === 0 ? `
+                        <div class="py-4 text-center rounded-lg border border-dashed border-white/[0.02] bg-white/[0.005] select-none">
+                          <span class="text-[9px] text-obsidian-550 block italic">No dispatches logged in this session.</span>
+                        </div>
+                      ` : state.emailLog.map(lg => `
+                        <div class="p-2 bg-obsidian-950/90 rounded-lg border border-white/[0.02] text-[9.5px]/relaxed flex items-start justify-between gap-2">
+                          <div class="min-w-0">
+                            <span class="text-white block font-semibold truncate select-all">Sent to: ${lg.recipient}</span>
+                            <span class="text-obsidian-450 block truncate font-mono text-[9px]">${lg.metrics}</span>
+                          </div>
+                          <span class="text-[8.5px] font-mono text-obsidian-550 shrink-0 mt-0.5">${new Date(lg.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        `;
+
+        // Side details Drawer drawer implementation
+        if (state.selectedProjectForDrawerId) {
+          const detailProj = state.projects.find(p => p.id === state.selectedProjectForDrawerId);
+          if (detailProj) {
+            const m = computeCampaignMetrics(detailProj);
+            const detailDebriefs = getProjectDebriefs(detailProj);
+            
+            let statusText = detailProj.isCompleted ? "Delivered Record" : "Active Campaign";
+            let badgeStyle = detailProj.isCompleted ? "bg-emerald-550/10 text-emerald-400 border-emerald-555/20" : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+            
+            drawerHtml = `
+              <!-- Click mask screen blocker overlay -->
+              <div class="fixed inset-0 bg-obsidian-950/80 backdrop-blur-sm z-50 flex justify-end no-print cursor-pointer" onclick="state.selectedProjectForDrawerId = null; render();">
+                <!-- Slide right aligned panel card -->
+                <div class="max-w-md w-full bg-obsidian-950 border-l border-white/[0.08] h-full p-6 space-y-6 flex flex-col justify-between overflow-y-auto shadow-2xl cursor-default relative" 
+                     onclick="event.stopPropagation();">
+                  
+                  <div class="space-y-6">
+                    <!-- Drawer Header bar -->
+                    <div class="flex items-center justify-between border-b border-white/[0.04] pb-4">
+                      <div class="space-y-1.5">
+                        <span class="border rounded-lg px-2.5 py-0.5 text-[8.5px] font-mono font-bold tracking-widest uppercase ${badgeStyle}">
+                          ${statusText}
+                        </span>
+                        <h2 class="text-sm font-mono font-black text-transparent bg-clip-text bg-gradient-to-r from-gold-100 to-gold-400 uppercase tracking-widest leading-tight">
+                          Campaign Parameters
+                        </h2>
+                      </div>
+                      <button onclick="state.selectedProjectForDrawerId = null; render();" class="text-obsidian-500 hover:text-white transition p-1.5 text-lg leading-none bg-white/[0.02] hover:bg-white/[0.08] rounded-xl border border-white/5 font-mono select-none">
+                        &#x2715;
+                      </button>
+                    </div>
+
+                    <!-- PM and Designer metadata info sheet -->
+                    <div class="grid grid-cols-2 gap-4 font-sans">
+                      <div class="p-4 bg-obsidian-900/60 border border-white/[0.04] rounded-xl space-y-1">
+                        <span class="text-[9px] font-mono font-bold text-obsidian-450 uppercase tracking-widest block">${tActive.labelPM}</span>
+                        <span class="text-xs font-bold text-white block truncate">${detailProj.chefDeProjet}</span>
+                      </div>
+                      <div class="p-4 bg-obsidian-900/60 border border-white/[0.04] rounded-xl space-y-1">
+                        <span class="text-[9px] font-mono font-bold text-obsidian-450 uppercase tracking-widest block">${tActive.labelArtist}</span>
+                        <span class="text-xs font-bold text-white block truncate">${detailProj.motion}</span>
+                      </div>
+                    </div>
+
+                    <!-- Process dates details checklist -->
+                    <div class="space-y-4 border-b border-white/[0.04] pb-5">
+                      <h4 class="text-[9.5px] font-mono font-bold text-obsidian-400 uppercase tracking-widest border-b border-white/[0.04] pb-2 select-none">
+                        📅 Timelines & Metrics
+                      </h4>
+                      <div class="space-y-2 font-mono text-xs">
+                        <div class="flex justify-between items-center bg-obsidian-900/40 p-3 rounded-lg border border-white/[0.03]">
+                          <span class="text-obsidian-400 font-sans font-medium">${tActive.labelReceived}:</span>
+                          <span class="text-white font-semibold">${cleanDateFormat(detailProj.dateReception)}</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-obsidian-900/40 p-3 rounded-lg border border-white/[0.03]">
+                          <span class="text-obsidian-400 font-sans font-medium">${tActive.labelDeadline}:</span>
+                          <span class="text-rose-450 font-bold">${cleanDateFormat(detailProj.deadline)}</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-obsidian-900/40 p-3 rounded-lg border border-white/[0.03]">
+                          <span class="text-obsidian-400 font-sans font-medium">Timeline count:</span>
+                          <span class="text-gold-450 font-extrabold uppercase text-[11px]">${formatRemainingDays(m.remainingDays)}</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-obsidian-900/40 p-3 rounded-lg border border-white/[0.03]">
+                          <span class="text-obsidian-400 font-sans font-medium">Total span size:</span>
+                          <span class="text-white font-bold">${m.totalDays} Days</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Debrief Gates milestones progress checklist -->
+                    <div class="space-y-4">
+                      <h4 class="text-[9.5px] font-mono font-bold text-obsidian-400 uppercase tracking-widest border-b border-white/[0.04] pb-2 select-none">
+                        🚩 Debrief Gates Checklist
+                      </h4>
+                      <div class="space-y-2">
+                        ${detailDebriefs.length === 0 ? `
+                          <p class="text-xs text-obsidian-550 italic bg-obsidian-900/30 p-4 border border-dashed border-white/[0.04] rounded-xl text-center font-sans select-none">
+                            No active milestones defined.
+                          </p>
+                        ` : detailDebriefs.map((dt, idx) => `
+                          <div class="flex items-center gap-3 bg-obsidian-900/40 p-3 rounded-xl border border-white/[0.03] font-mono text-xs">
+                            <div class="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-[9.5px] select-none">✔</div>
+                            <div class="grow flex justify-between">
+                              <span class="text-obsidian-350 font-sans font-bold">Gate ${idx+1}</span>
+                              <span class="text-gold-450 select-all font-bold">${cleanDateFormat(dt)}</span>
+                            </div>
+                          </div>
+                        `).join('')}
+                      </div>
+                    </div>
+
+                    <!-- Custom labels display segment -->
+                    ${detailProj.tags && detailProj.tags.length > 0 ? `
+                      <div class="space-y-4">
+                        <h4 class="text-[10px] font-bold text-obsidian-400 uppercase tracking-widest border-b border-white/5 pb-1 select-none">
+                          🏷️ Active Tags & Categorization
+                        </h4>
+                        <div class="flex flex-wrap gap-1.5 pt-1.5">
+                          ${detailProj.tags.map(tag => {
+                            return `<span class="px-2.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider select-none ${getTagClass(tag)}">${tag}</span>`;
+                          }).join('')}
+                        </div>
+                      </div>
+                    ` : ""}
+
+                    <!-- Notes texts segment -->
+                    ${detailProj.autreInformation ? `
+                      <div class="space-y-2 font-sans">
+                        <h4 class="text-[10px] font-bold text-obsidian-400 uppercase tracking-widest border-b border-white/5 pb-1 select-none">
+                          📝 Campaign Notes & Instructions
+                        </h4>
+                        <div class="bg-obsidian-900 border border-white/5 rounded-xl p-4 text-[11.5px] leading-relaxed text-obsidian-300 max-h-45 overflow-y-auto pr-1">
+                          ${detailProj.autreInformation.replace(/\n/g, '<br/>')}
+                        </div>
+                      </div>
+                    ` : ""}
+
+                    <!-- Folder path copying utilities -->
+                    ${detailProj.lienProjet ? `
+                      <div class="space-y-2 text-xs font-sans">
+                        <span class="text-[9px] font-bold text-obsidian-450 uppercase tracking-widest block">${tActive.labelFolder}</span>
+                        <div onclick="copyText('${detailProj.lienProjet.replace(/\\/g, '\\\\')}');" 
+                             class="p-3 bg-obsidian-900 border border-white/5 hover:border-gold-500/20 active:bg-gold-500/5 hover:text-white text-obsidian-300 rounded-xl font-mono text-[11px] truncate flex items-center justify-between cursor-pointer transition flex justify-between">
+                          <span class="truncate block pr-2">${detailProj.lienProjet}</span>
+                          <span class="text-gold-400 text-[10px] shrink-0 font-bold uppercase select-none font-sans">Copy</span>
+                        </div>
+                      </div>
+                    ` : ""}
+                  </div>
+
+                  <!-- Bottom CTA edit or delete button controls -->
+                  <div class="grid grid-cols-2 gap-3 pt-6 border-t border-white/5 mt-6 font-sans">
+                    <button onclick="activateEditFromDrawer('${detailProj.id}');" class="py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-obsidian-950 text-xs font-bold uppercase rounded-xl transition flex items-center justify-center gap-1.5 shadow-lg shadow-gold-500/5">
+                      <span>🖊️ Edit Campaign</span>
+                    </button>
+                    <button onclick="deleteActiveCampaignById('${detailProj.id}');" class="py-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-450 hover:bg-rose-500/25 text-xs font-bold uppercase rounded-xl transition flex items-center justify-center gap-1.5">
+                      <span>🗑️ Delete Campaign</span>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            `;
+          }
+        }
+      }
+
+      if (state.showRegisterModal) {
+        registerModalHtml = `
+          <div class="fixed inset-0 bg-obsidian-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 no-print animate-fade-in animate-duration-200" onclick="state.showRegisterModal = false; render();">
+            <!-- Modal body wrapping form elements with click preservation -->
+            <div class="w-full max-w-lg max-h-[90vh] overflow-y-auto relative shadow-2xl rounded-2xl" onclick="event.stopPropagation();">
+              ${formHtml}
+            </div>
+          </div>
+        `;
+      }
+
+      const bodyWorkspace = `
+        <div class="max-w-[1800px] mx-auto px-6 md:px-8 py-6 space-y-6">
+          
+          <!-- Unified Statistics metrics and tools bar -->
+          ${statsHtml}
+
+          ${analyticsDashboardBHtml}
+
+          ${ganttChartHtml}
+
+          ${advancedSimulationsHtml}
+
+          <!-- Controls Layout: Interactive Filters with Integrated Register Button -->
+          <div class="w-full no-print">
+            ${filterBarsHtml}
+          </div>
+
+          <!-- 📊 Data Grid Table / Kanban (Full Page Width) -->
+          <div class="w-full">
+            ${worksheetDetailsHtml}
+          </div>
+
+        </div>
+      `;
+
+      // Static Custom system Alerts banner
+      let toastHtml = "";
+      if (state.toast) {
+        const style = state.toast.type === 'success' ? 'border-gold-500/20 bg-obsidian-900/90 text-gold-300' : 'border-rose-500/20 bg-obsidian-900/90 text-rose-300';
+        const vectorIcon = icons[state.toast.type] || icons.success;
+        toastHtml = `
+          <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3.5 border rounded-2xl shadow-xl backdrop-blur-md max-w-sm w-full mx-auto animate-bounce ${style}">
+            <div class="shrink-0">${vectorIcon}</div>
+            <div class="space-y-0.5 text-left">
+              <span class="text-xs font-bold text-white block">${state.toast.title}</span>
+              <span class="text-[11px] text-obsidian-400 block">${state.toast.message}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      let emailAlertModalHtml = "";
+      if (state.showEmailAlertModal) {
+        emailAlertModalHtml = `
+          <div class="fixed inset-0 bg-obsidian-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 no-print" onclick="state.showEmailAlertModal = false; render();">
+            <div class="w-full max-w-2xl bg-obsidian-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl" onclick="event.stopPropagation();">
+              
+              <!-- Modal Header -->
+              <div class="px-6 py-4 bg-obsidian-950 border-b border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-mono text-xs select-none">
+                  <span class="text-gold-400">✉</span>
+                  <h3 class="font-black uppercase text-gold-400 tracking-wider">
+                    Simulated Email Dispatch Result
+                  </h3>
+                </div>
+                <button onclick="state.showEmailAlertModal = false; render();" class="text-obsidian-500 hover:text-white transition px-2 py-1 text-[10px] uppercase font-bold bg-white/[0.02] border border-white/5 rounded-lg select-none cursor-pointer">
+                  &#x2715; Close Preview
+                </button>
+              </div>
+
+              <!-- Content Body -->
+              <div class="p-6 space-y-4">
+                <p class="text-[11px] text-obsidian-400 leading-relaxed text-left font-sans">
+                  The Governance alert engine evaluated all active projects, consolidated milestones and imminent deadline warnings, and successfully routed the daily digest to the administrator's account below:
+                </p>
+                
+                ${generateDailyEmailDigest()}
+              </div>
+
+              <!-- Footer Actions -->
+              <div class="px-6 py-4 bg-obsidian-950/80 border-t border-white/5 flex items-center justify-end font-sans">
+                <button onclick="state.showEmailAlertModal = false; render();" class="px-5 py-2 hover:bg-white/[0.05] border border-white/10 text-white hover:text-gold-400 active:translate-y-0.5 transition rounded-xl text-xs font-bold uppercase tracking-wider select-none cursor-pointer">
+                  Great, Acknowledge
+                </button>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }
+
+      // Splice parts inside main interactive node
+      container.innerHTML = `
+        ${toastHtml}
+        ${headerHtml}
+        ${bodyWorkspace}
+        ${drawerHtml}
+        ${registerModalHtml}
+        ${emailAlertModalHtml}
+      `;
+
+      // Restore dynamic user focus and caret cursor offsets
+      if (activeId) {
+        const restoredEl = document.getElementById(activeId);
+        if (restoredEl) {
+          try {
+            restoredEl.focus();
+            if (selectionStart !== null && selectionEnd !== null && (restoredEl.tagName === 'INPUT' || restoredEl.tagName === 'TEXTAREA')) {
+              restoredEl.setSelectionRange(selectionStart, selectionEnd);
+            }
+          } catch (e) {}
+        }
+      }
+    }
+
+    function loadConfig() {
+      fetch("config.json")
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.adminPassword) {
+            if (!window.LCMotionConfig) {
+              window.LCMotionConfig = {};
+            }
+            window.LCMotionConfig.adminPassword = data.adminPassword;
+            console.log("Configuration successfully loaded dynamically.");
+          }
+        })
+        .catch(err => {
+          console.warn("External config.json fetch bypassed, fallback to script configuration.", err);
+        });
+    }
+
+    // Initialize logic
+    initDatabase();
+    checkSession();
+    loadConfig();
+    render();
+  </script>
+</body>
+</html>
