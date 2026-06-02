@@ -207,14 +207,14 @@
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
         </svg>
-        <span class="text-xs font-mono tracking-wider text-obsidian-400">Loading LC Motion Vault...</span>
+        <span class="text-xs font-mono tracking-wider text-obsidian-400">Loading...</span>
       </div>
     </div>
   </div>
 
   <!-- APPLICATION DATA & STATE HANDLER SCRIPT -->
   <script>
-    // Safe bilingual translation database (all Arabic and English tags combined perfectly)
+    // Safe bilingual translation database 
     const translations = {
       en: {
         logoTitle: "Motion Graphic Project Manager Pro",
@@ -661,7 +661,7 @@
       });
     }
 
-    // Dynamic dynamic dropdown filter arrays
+    // Dynamic dropdown filter arrays
     function getFilterMetadata() {
       const pmSet = new Set();
       const artistSet = new Set();
@@ -902,7 +902,7 @@
         if (pwd.trim() === correctPassword) {
           safeStorage.setItem(SESSION_KEY, JSON.stringify({ authenticated: true, timestamp: Date.now() }));
           state.isAuthenticated = true;
-          triggerToast("Authentication Verified", "Welcome to LC Motion administrative hub.", "success");
+          triggerToast("Authentication Verified", "Welcome to Go Motion administrative hub.", "success");
         } else {
           state.shakeLogin = true;
           triggerToast("Access Blocked", textLabel.loginError, "error");
